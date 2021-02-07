@@ -1,0 +1,34 @@
+Suppose we'd like to estimate \(\mu\) in a linear regression 
+\begin{equation*}
+    Y_{i} = \mu + \epsilon_{i} 
+\end{equation*}
+where \(i = 1,\dots,N\)
+and we have another set of observations of \(Z_{j}: j =1,\dots,M\) such that 
+\begin{equation*}
+    Z_{j} = f (\mu) + u_{j}
+\end{equation*}
+Can combine into a GMM framework, for simplicity assume \(f(x)= ax\), otherwise can approximated by sieves. 
+
+Then construct 
+\begin{equation*}
+    g(\mu, a) = \bmqty{E_{N} (Y_{i} - \mu) \\ E_{M} (Z_{j} - a \mu)}  
+\end{equation*}
+then \(\hat{\theta} = \hat{\mu}, \hat{a} = \arg \min_{\mu,a} g(\mu,a)' W g(\mu,a)\) for some pd matrix \(W\). The optimal weighting matrix is \(\Omega^{-1}\) where \(\Omega\) is the asymptotic variance of \({g}(\theta)\).
+
+Suppose \(M= 1\), then \(N\to \infty\) the auxiliary part will receive \(o(1)\) weight. 
+
+\subsection{High-dimensional Mean Estimation}
+
+Suppose \(Y_{i} = \mu_{i} + \epsilon_{i}\), but the vector \((\mu_{1}, \dots, \mu_{N})\) is assumed to be sparse. 
+
+\begin{equation*}
+    g({\mu}, a) = \bmqty{\pqty{Y_{1} - \mu_{1}} \\ \vdots \\ (Z_{i} - a \mu_{i})}
+\end{equation*}
+
+This looks like a measurement error model. 
+
+Another way to look at this is 
+\begin{equation*}
+    y_{i} = \mu_{i} + \epsilon_{i}
+\end{equation*}
+and we have an IV for \(\mu_{i}\) that is \(\nu_{i}\) such that correlation between \(\mu_{i}\) and \(\nu_{i}\) are positive, but \(\covariance(\nu_{i}, \epsilon_{i}) = 0\). \(\mu_{i}\) are not endogenous. 

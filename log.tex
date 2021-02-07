@@ -1,0 +1,286 @@
+\subsection{2020-08-21}
+Can we build a full probability model for such problem. Suppose that \(y: {\Omega}\to \mathbb{R}^{p}\) be a random vector that has finite second moment. 
+\begin{equation}
+    \Sigma = \variance(y) = \bqty{\sigma_{ij}}_{i,j = 1,\dots,p}
+\end{equation}
+
+Suppose there is an observation matrix \(G_{t} = \bqty{g_{ij}}_{ij, t}\) for each time \(t\). 
+\begin{equation}
+    g_{ij,t} = \Phi\pqty{\theta_{1} \rho_{ij} + f(z_{i},z_{j})}
+\end{equation}
+where \(\rho_{ij}\) is the correlation coefficient. 
+We can estimate \(\theta_{1}\) and \(f\) is a symmetric function, it could be \(\theta_{2} (z_{i} + z_{j})\), and \(z\) are asset characteristics such as size: larger firms have more media exposure. 
+
+How to combine the two sets of information. Assume a DCC dynamic:
+\begin{equation}
+    \Sigma_{t} = D_{t}^{\frac{1}{2}} R_{t} D_{t}^{\frac{1}{2}}
+\end{equation}
+where \(D_{t}\) individually follows GARCH(1,1), \(R_{t}\). 
+
+In DCC, \(R_{t}\) is written as \(r_{ij,t} = \frac{q_{ij,t}}{\sqrt{q_{ii,t} q_{jj,t}}}\) where \(q_{ij,t}\) follows GARCH, or exponential smoothing. 
+\begin{equation}
+    q_{ij,t} = \bar{\rho}_{ij,t} + \alpha \pqty{\epsilon_{i,t-1} \epsilon_{j,t-1} - \bar{\rho}_{ij}} + \beta \pqty{q_{ij,t} - \bar{\rho}_{ij}} 
+\end{equation}
+
+\subsection{2020-08-22}
+I have tried to simulate covariance matrix, see simulation codes. Notice that in Bickel and Levina, they showed that banding is more efficient when the index has meaning.
+
+Really it's about the model for \(g_{ij} = \mathbf{1}\pqty{\rho_{ij} > \tau}\). 
+\begin{equation}
+    P(g_{ij} = 1) = \Phi\pqty{\theta_{1}\rho_{ij} + \theta_{2} z_{1} + \theta_{3}z_{2}}
+\end{equation}
+
+Then we choose that \(\tilde{\rho}_{ij}\) that are significantly nonzero. 
+
+
+\subsection{2020-09-01}
+Based on the projection idea, suppose we have several estimator \(S_{1},\dots,S_k\) that besides the sample covariance matrix \(S_{0}\), we want to project \(\Sigma: n\times n\) from observations over \(t =1 ,\dots,T\) on \(I, S, S_{1},\dots S_{k}\). Suppose \(k = 1\), then we want to find the projection with the inner product defined on the space of random matrices :
+\begin{equation}
+    \ip{A}{B} = E \frac{1}{n} \tr[AB^{\top}]
+\end{equation}
+
+Then we have \(\Sigma = aI + \beta_{0}S_{0} + \beta_{1}S_{1}\), the oracle coefficients are 
+\begin{equation}
+    \bmqty{a \\ \beta_{0} \\\beta_{1}} = \bmqty{\norm{I}^{2} & \ip{S_{0}}{I} & \ip{S_{1}}{I} \\ \ip{I}{S_{0}} & \norm{S_{0}}^{2} & \ip{S_{1}}{S_{0}} \\ \ip{I}{S_{1}} & \ip{S_{0}}{S_{1}} & \norm{S_{1}}^{2} }^{-1}
+    \bmqty{ \ip{\Sigma}{I} \\ \ip{\Sigma}{S_{0}}\\ \ip{\Sigma}{S_{1}}}
+\end{equation}
+
+Each quantity can be estimated by the sample counterpart, i.e. replacing \(\Sigma\)  with \(S_{0}\). We do a simulation.
+
+But this is wrong, because we almost always fully load on the sample covariance matrix. I think it's because we can't simply replace the quantities with sample counterparts.
+
+Suppose we have two estimators \(S_{1}, S_{2}\) for \(\Sigma\), we want to find \(\Sigma^{*} = \alpha I +\sum_{j}\beta_{j}S_{j}\) such that \(E \norm{\Sigma^{*} - \Sigma}^{2}\) is minimised. 
+
+\begin{align}
+    E \norm{\Sigma^{*} - \Sigma}^{2} = E\ip{ \alpha I +\sum_{j}\beta_{j}S_{j} - \Sigma}{\alpha I +\sum_{j}\beta_{j}S_{j} - \Sigma} 
+\end{align}
+
+Define 
+\begin{align}
+    \mu := \ip{\Sigma}{I} = E \ip{S_{1}}{I} =: \mu_{1}\\
+    \mu_{2} := E \ip{S_{2}}{I} = E\bqty{\frac{1}{n} \tr S_{2,n}}
+\end{align}
+
+\red{Need to think about what can and cannot be directly estimated}
+\subsection{2020-09-03}
+
+We have on the LHS: 
+\begin{equation}
+    \bmqty{\ip{\Sigma}{I} \\\ip{\Sigma}{S_{1}} \\ \ip{\Sigma}{S_{2}}}
+\end{equation} 
+which involves unknown quantity \(\Sigma\).
+
+\begin{align}
+    \ip{\Sigma}{I}& = E \ip{S}{I} = E \frac{1}{n} \tr(S) \\
+    &= \frac{1}{n} E \tr(\frac{1}{T} \sum x_{t}x_{t}')
+\end{align}
+which can be estimated with 
+\begin{equation}
+    \frac{1}{n} \frac{1}{T} \tr \pqty{\sum_{t} x_{t} x_{t}'}
+\end{equation}
+
+\subsection{2020-09-04}
+The linear shrinkage is just projection with the inner product defined by \(\ip{A}{B}_{E} = E \ip{A}{B}\) for \(A, B\) random matrices taking value in the space of psd real matrices. 
+
+\subsection{2020-10-10}:
+Now lets consider if we can estimate the inner product between \(\Sigma\) and a another matrix \(A\), for which we have repeated observations such as the sample covariance \(S\). 
+
+Let there be \(y_{t}: t = 1,\dots,T\), then we have 
+\begin{equation*}
+    S_{t} = y_{t} y_{t}' \qq{and} S = \frac{1}{T} \sum^{T} S_{t}f
+\end{equation*}
+
+The inner product is defined on random matrices: 
+\begin{defn}
+    Let \(A, B\) be random \(n\times n\) matrices, define 
+    \begin{equation*}
+        \ip{A}{B} = E \frac{1}{n} \tr(AB')
+    \end{equation*}
+\end{defn}
+
+Then we can estimate \(\ip{\Sigma}{I} = E \frac{1}{n} \tr\pqty{\Sigma}\) by
+\begin{equation*}
+    \frac{1}{T} \sum_{t} \frac{1}{n}\tr\pqty{S_{t}}
+\end{equation*}
+
+For \(\ip{\Sigma}{S} = E \frac{1}{n} \tr\pqty{\Sigma S'}\), 
+\begin{align*}
+    \ip{\Sigma}{S} &= E \frac{1}{n} \sum_{i}\sum_{j} \sigma_{ij}s_{ij} \\
+    &=  \frac{1}{n} \sum_{i}\sum_{j} \sigma_{ij}^{2}\\
+    &= \ip{\Sigma}{\Sigma}
+\end{align*}
+
+\(\ip{\Sigma - S} = \norm{\Sigma}^{2} - \ip{S}{\Sigma} - \ip{\Sigma}{S} + \norm{S}^{2} = \norm{S}^{2} - \ip{\Sigma}{S}\). 
+
+For the part
+\begin{align}
+    \norm{S}^{2} &= E \frac{1}{n} \sum_{i} \sum_{j} s_{ij}^{2} \\
+    &= \frac{1}{n} E \sum_{i}\sum_{j} \pqty{\pqty{s_{ij} - \sigma_{ij}}^{2} + \sigma_{ij}^{2} } \\
+    &= \frac{1}{n} \sum_{i}\sum_{j}E \pqty{\frac{1}{T} \pqty{\sum_{t} y_{it}y_{jt}'} - \sigma_{ij}}^{2} + R
+\end{align}
+the first term is just the variance of \(s_{ij}\) which is an estimate of \(\sigma_{ij} =  \covariance(y_{i}, y_{j})\). We can estimate it with:
+\begin{equation*}
+    \frac{1}{T} \pqty{\sum_{t} s_{t,ij} - s_{ij}}^{2}
+\end{equation*}
+
+Then consider a general \(A\):
+\begin{align*}
+    \ip{\Sigma}{A} &= \frac{1}{n} \sum_{i}\sum_{j} \sigma_{ij}a_{ij} \\
+    &= \frac{1}{n} \sum_{i}\sum_{j} \sigma_{ij} E\pqty{a_{ij}}
+\end{align*}
+
+What's important is when \(a_{ij}\) and \(s_{ij}\) are not independent and when \(a_{ij}\) are not unbiased.
+\subsection{2020-10-16}
+Imagine the eigendecompositon, we are finding rank \(k\) approximation of \(\Sigma\). With the information in \(G\), suppose we have 
+\begin{equation*}
+    \norm{\Sigma - \Sigma \mathbf{1}_{G}} \qq{is small.}
+\end{equation*}
+
+Then \(G\) contains information that's useful.
+\subsection{2020-11-09}
+There are several questions:
+\begin{enumerate}
+    \item Does the network informs about the comovement?
+    \item Now I think the best way is to combine the factor model, the shrinkage method and the network information. 
+\end{enumerate}
+
+\subsection{2020-11-12}
+
+A network of cointegration relationship. 
+
+\subsection{2020-11-18}
+    Suppose we have a sparsity matrix to estimate, if we have some information about which location has zero elements: \(\sigma_{ij} = 0\), suppose this information is independent across \(ij\). Our estimate \(S^{*} = [S^{*}_{ij}]\) will try to minimise the Frobenius Norm: 
+    \begin{equation*}
+        \min E \sum_{i}\sum_{j} \pqty{\sigma_{ij} - s^{*}_{ij}}^{2}
+    \end{equation*}
+    
+    Suppose we know the probability of \(\sigma_{ij} \neq 0\): \(p_{ij} = p(G_{ij}, X_{i}, X_{j})\) exactly, then suppose our sample estimation is \(s_{ij}\), for each element the expectation of MSE is:
+    \begin{equation*}
+        p_{ij} E (s_{ij} - \sigma_{ij})^{2} + (1-p_{ij}) E \pqty{s_{ij}^{2}} = E\pqty{s_{ij} - \sigma_{ij}}^{2}
+    \end{equation*}
+    if we use \(s_{ij}\) to estimate \(\sigma_{ij}\), the MSE of using \(0\) as estimate is:
+    \begin{equation*}
+        p_{ij} \sigma^{2}_{ij} 
+    \end{equation*}
+    so we would include \(s_{ij}\) if \(p_{ij}> \frac{E\pqty{s_{ij} - \sigma_{ij}}^{2}}{\sigma^{2}_{ij}}\)
+    
+    \subsection{2020-11-18}
+    I have moved the original introduction section here. 
+    \begin{question}
+        Can we incorporate the information from \(G\) in the estimation of \(\Sigma\). I have thought of several ways:
+    \end{question}
+
+    \begin{enumerate}
+        \item \textbf{Hard thresholding}: suppose we estimate the elements \(\sigma_{ij}\) in  \(\Sigma\) with \(s_{ij,G}(\hat{\sigma}_{ij})\), where \(\hat{\sigma}_{ij}\) are the sample covariance estimates, and \(s_{ij,G}\) is a hard-thresholding operator:
+        \begin{equation}
+            s_{ij,G}(\hat{\sigma}_{ij})
+            \begin{cases}
+                \hat{\sigma}_{ij} \qq{if} G_{ij} =1 \qq{or} i=j \\
+                0 \qq{otherwise}
+            \end{cases}
+        \end{equation}
+
+        Let the estimated matrix be \(\hat{S}_{G} = \pqty{s_{ij,G}(\hat{\sigma}_{ij})}_{i,j = 1,\dots, N}\). 
+        \cite{bickel2008RegularizedEstimation} compares the difference between thresholding and banding and finds intuitively that if the assets are ordered in a meaningful way, then banding is more efficient than thresholding. Our method is like banding with ``order'' implied by \(G\). 
+
+        \cite{fan2016IncorporatingGlobal} considers the hard thresholding where they only keep the \(\hat{\sigma}_{ij} \) for which \(i,j\) are in the same industry, so their \(G\) is just a block diagonal matrix. I think it will miss some important links. 
+
+        \item \textbf{Shrinkage}: \cite{ledoit2004WellconditionedEstimator} considers finding a linear combination of sample covariance matrix \(\hat{\Sigma}\) and the shrinkage target \(I\) that minimizes the mean squared estimation error in Frobenius norm:
+        \begin{equation}
+            \min_{\rho_{1},\rho_{2}} E\pqty{\norm{\Sigma^{*} - \Sigma}^{2}} \qq{where} \Sigma^{*} = \rho_{1} \hat{\Sigma} + \rho_{2} I 
+        \end{equation}
+
+        I wonder if it makes sense to shrink towards hard-threshold estimator \(\hat{S}_{G}\), that is we find a minimizing linear combination:
+        \begin{equation}
+            \rho_{1}\hat{\Sigma} +\rho_{2}\hat{S}_{G} \qq{or} \rho_{1}\hat{\Sigma} +\rho_{2}\hat{S}_{G}  + \rho_{3} I
+        \end{equation}
+
+        \item A more direct approach:
+        \begin{equation*}
+            y_{it} = b_{i}'f_{t} + u_{it}
+        \end{equation*}
+        such that \(\Sigma_{u} = \Sigma_{G} + \Sigma_{u_{d}}\), that is after taking out the network component, the rest is a sparse matrix. 
+    \end{enumerate}
+
+    \begin{question}
+        A related question is
+        \begin{enumerate}
+            \item How much information is contained in \(G\)? I thought about modeling a probit model, say
+            \begin{equation}
+                P(G_{ij} =1) = \Phi(\theta_{1} \sigma_{ij} +  f(z_{i},z_{j}))
+            \end{equation}
+            where \(z_{i}\) can be some firm characteristics such as \textit{size}: larger firms have more chances to be on the newspapers, and it's more likely to be linked to other firms. Maybe instead of hard threshold, we can do some weighting with weights calculated from \(\theta\).
+        \end{enumerate}
+    \end{question}
+    
+    \subsection{2020-11-19}
+        Let's consider things we can do as a general plan for the python file. Suppose we have data \(X: T\times N\), from which we can calculate the sample covariance matrix \(S\) and the correlation matrix \(R\). 
+
+        \subsubsection{Adaptive Correlation Thresholding}
+        Suppose we use \textit{generalized thresholding operator} on \(R\): \(h(r,\tau)\) where several possibilities exist:
+        \begin{enumerate}
+            \item Hard thresholding: \(h(r,\tau) = r\) iff \(r \leq \tau\) or \(r\) is on the diagonal. 
+            \item Soft thresholding: \(sign(r)(\abs{r} - \tau)_{+} \)
+            \item SCAD, etc
+        \end{enumerate}
+        
+        The \(\tau\) can be generated by 
+        \begin{enumerate}
+            \item Directly using \(G\), c.f. Hoberg's data.
+            \item Use a probit model with \(G\). 
+            \begin{equation}
+                \tau\pqty{G_{ij}} = \Phi\pqty{a + b \abs{G_{ij}}}
+            \end{equation}
+            \item etc
+        \end{enumerate}
+        
+\subsection{2020-11-24}
+    If we have in addition to \(Y_{t}\) observations, some additional information \(G\) about the covariance \(\Sigma\). Can we improve the efficiency of estimating \(\Sigma\); can we relax the condition on how sparse the matrix is?
+
+    For example, suppose we observe an estimated network  \(G: p \times p\) where \(g_{ij} = 1\) indicates that with probability \(p\), \(\sigma_{ij} > 0\) (or \(\sigma_{ij} > \tau\) for some level \(\tau\)). If \(g_{ij} =0\), then we have no information about \(\sigma_{ij}\). 
+
+    With the additional information about \(G\), we can allow for a combination of
+    \begin{enumerate}
+        \item Dominant units that are correlated with many other assets, but the total number of dominant units is small;
+        \item Block dependence among some units; 
+        \item Sparse dependence of all the other assets on the previous two classes. 
+    \end{enumerate}
+
+    Let \(\mathcal{I}_{G}\subset \Bqty{1,\dots,p}\) be the index of stocks \(i\) such that \(\sum_{j} g_{ij} > 0\). Let \(p_{G} := \abs{\mathcal{I}_{G}}\) be the number of such stocks. 
+
+    \begin{remark}
+        We can extend it to consider all the connected nodes that are separated. Or even come up with a classifier. 
+    \end{remark}
+
+    Suppose \(p_{G}\) is small, then we can consistently estimate the matrix \(\Sigma_{G} = \variance\pqty{Y_{\mathcal{I}_{G}}}\) by 
+    \begin{equation}
+        \hat{\Sigma}_{G} := \frac{1}{T} \sum_{t} \pqty{Y_{t,\mathcal{I}_{G}} - \bar{Y}}\pqty{Y_{t,\mathcal{I}_{G}} - \bar{Y}}'
+    \end{equation}
+    \textbf{archive}:
+    I have done some simulation with randomly generated sparse covariance matrix using three estimation methods, please see the html file for more details. 
+    \begin{enumerate}
+        \item Sample covariance matrix \(\hat{\Sigma}\);
+        \item Ledoit-Wolf Shrinkage covariance matrix \(\Sigma^{*}\).
+        \item Hard-thresholding matrix \(\hat{S}_{G}\).
+    \end{enumerate}
+
+    We randomly generate a sparse p.d. matrix \(\Sigma\) with dimension \(N\times N\), and for some fixed value \(\tau\), we observe \(G\) such that \begin{equation}
+        G_{ij} = 1 \qq{if} \sigma_{ij} > \tau 
+    \end{equation}
+    In the simulation, we take \(N = 100\), and \(\tau\) is chosen such that 0.7\% of elements of \(G\) are \(1\). We draws \(T = 100\) iid sample from \(N(0,\Sigma)\), and estimate with the three methods.
+
+    We find that \(\hat{S}_{G}\) does better in terms of matrix \(1\)-norm, and slightly worse in terms of Frobenius norm than \(\Sigma^{*}\), while both do much better than sample \(\hat{\Sigma}\). 
+
+
+    \subsection{Empirical Study}
+    In the empirical study, suppose a factor model for the asset returns
+    \begin{equation*}
+        Y_{it} = B_{i}'F_{t} + u_{it}
+    \end{equation*}
+    where \(\Sigma_{u}\) is assumed to be sparse. We consider the estimation of \(\Sigma_{u}\). 
+    
+\subsection{2020-01-03}
+    The \(\lambda\) comes from a maximal inequality of Gaussian variables, from \cite{buhlmann2011StatisticsHighdimensional}:
+    \begin{equation*}
+        
+    \end{equation*}

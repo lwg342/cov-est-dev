@@ -1,0 +1,44 @@
+The goal is to estimate \(\Sigma =\variance(y)\) where \(y\) is a \(p \times 1\) random vector, say asset returns. We collect the \(T\) observations into a matrix \(Y:p\times T\). Sample covariance estimate \(\hat{\Sigma} = \frac{1}{T} (Y - \bar{Y}\mathbf{1})(Y - \bar{Y}\mathbf{1})'\) is problematic when \(p\) is not small relative to \(T\). Popular estimation strategies include factor model, shrinkage, thresholding, banding, tapering, etc. 
+
+If in addition to the observaion of \(Y\), we have identified from textual analysis a network \(G\) among the firms, where \(G_{ij} = 1\) implies that it's ``likely'' that the returns of firm \(i,j\) are correlated. For example, \cite{hoberg2016TextBasedNetwork} identifies a product similarity network from financial reports that have better performance than industry block diagonal matrix. Linked firms are potentially subject to similar demand shock in that specific industry. 
+
+The question is how we can extract the information contained in these analyses to help estimate the covaraince \(\Sigma\).
+
+This paper proposes the following \textit{adaptive thresholding with auxiliary information} method, suppose we observe \(Y_{t}\) for \(t = 1 ,\dots, T\):
+\begin{enumerate}
+    \item Estimate the sample covariance estimate \(\hat{\Sigma}\), and the sample correlation matrix \(\hat{R}\). 
+    \item Apply the generalized thresholding function \(h(r_{ij},\tau_{ij})\) to the off-diagonal elements of \(\hat{R}\), \cite{rothman2009GeneralizedThresholding}. The novelty is now we allow the threshold \(\tau_{ij}\) to vary across elements and to depend on the network information.  Specifications we have considered for the threshold \(\tau\) are 
+    \begin{itemize}
+        \item 
+        the probit model
+            \begin{equation*}
+            \tau_{ij} = \tau\pqty{G_{ij}} = \Phi\pqty{a + b \abs{G_{ij}}}
+            \end{equation*}
+        \item simple linear model 
+            \begin{equation*}
+                \tau(G_{ij}) = a + bG_{ij}
+            \end{equation*}
+    \end{itemize}
+    \item Estimate the unknown parameters in the \(\tau\) function by cross validation, as in \cite{bickel2008CovarianceRegularization}, \cite{cai2011AdaptiveThresholding}, where we randomly split the sample \(V\) times, for each \(v\), compute the new estimator \(\hat{\Sigma}^{1,v}_{G}\) with the first subsample, and sample covariance \(\hat{\Sigma}^{2,v}\) and the criterion is 
+    \begin{equation*}
+        L(a, b) = \frac{1}{V} \sum_{v}^{V} \norm{\hat{\Sigma}^{1,v}_{G} - \hat{\Sigma}^{2,v}}^{2}_{F}
+    \end{equation*}
+    we find \(a,b\) that minimise this criterion. 
+    
+    \item Then with this estimation of \(a,b\), we can estimate \(\Sigma\) on the test sample. 
+\end{enumerate}
+
+There are several advantages of this method:
+\begin{enumerate}
+    \item The main advantage is that the network has economic meaning, comparing to data-driven thresholding or shrinkage. Hopefully, with a network that contains information about the real linkage, the relationship identified from auxialiary network will be more robust over time than the relationship identified from return data alone. 
+    \item We can include multiple network estimates in the \(\tau\), perhaps also characteristics of the company, so it's both flexible and extensible.
+    \item It might be helpful to capture industry-level comovement that is relevant to portfolio management and perhaps will capture some of the ``weak factors''.
+\end{enumerate}
+
+There are some challanges and questions as well:
+\begin{enumerate}
+    \item Since we don't observe the true \(\Sigma\), we wonder if there are some good criteria for evaluating the performance of our \(\hat{\Sigma}\). So far I am following \cite{ledoit2004HoneyShrunk} and \cite{ledoit2017NonlinearShrinkage}. But unlike the linear and nonlinear shrinkage method, our estimator is not designed for optimal performance under the Frobenius norm. 
+    \item We don't have a quality measure of the network matrix or a model for how the \(G_{ij}\) are generated. 
+    \item In simulation studies, the optimization takes some time, but the result is not yet very robust(some times it outperforms all competitors, but sometimes the optimization will be very   off-target).
+\end{enumerate}
+The following section will give detailed implementation of simulation results and some preliminary empirical.  

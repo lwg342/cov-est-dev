@@ -1,0 +1,69 @@
+\subsection{Procedure}
+Assume the excess return \(Y_{it}\) follows
+\begin{equation*}
+    Y_{it} = B_{i}' F_{t} + u_{it}
+\end{equation*}
+
+The procedure is:
+\begin{enumerate}
+    \item Remove the factor component by running time series linear regressions of \(Y_{it}\) on \(F_{k,t}\), obtain the beta estimates \(\hat{B}_{i}\) and the residual \(\hat{u}_{it}\). 
+    \item Compute the covaraince matrix \(S_{\hat{u}} = \hat{u}\hat{u}'\)and appply \textit{adaptive correlation thresholding} on \(S_{\hat{u}}\). 
+\end{enumerate}
+
+The last step is currently achieved in the following way. Let \(R_{u}\) be the correlation matrix calculated from \(S_{u}\). We use soft thresholding \(h(r_{ij}, \tau_{ij}) = \sign\pqty{r_{ij}} \pqty{r_{ij} - \tau_{ij}}_{+}\) on the off-diagonal elemetns \(r_{ij}\) of \(R_{u}\), where 
+\begin{equation*}
+    \tau_{ij} = \delta_{ij} \sqrt{\frac{\log N}{T}}
+\end{equation*}
+and 
+\begin{equation*}
+    \delta_{ij} = a + b G_{ij}
+\end{equation*}
+where for simplicity I have taken \(G\) to be the sum of all network matrices \(G = \sum_{t =2006}^{2017} G_{t}\),\blue{(so that the network is a little denser, and I have also considered specification of \(\delta\) as a probit model, but it complicates the optimization part because the constraint is nonlinear.)}. 
+
+Let the threshold estimate be \(\hat{R}_{u}(a,b)\), given \(a,b\), our estimate will be
+\begin{equation*}
+    \hat{S}_{u}(a,b) = \diag(S_{u})^{\frac{1}{2}} \hat{R}_{u}\diag(S_{u})^{\frac{1}{2}}
+\end{equation*}
+
+In order to guarantee positive definiteness, I follow the suggestion in \cite{fan2015OverviewEstimation} and \cite{fan2013LargeCovariance}, by first finding the minimum \(\underline{\delta}\) such that the \(\hat{S}(\delta, 0)\) has its smallest eigenvalue larger than \(0\) if we choose \(\tau_{ij} = \underline{\delta} \sqrt{\frac{\log N}{T}}\). 
+
+Then \(a,b\) are estimated using cross-validation following \cite{bickel2008CovarianceRegularization} by randomly spliting the sample \(V\) times, for each \(v = 1,\dots,V\), compute the estimate \(\hat{S}^{1,v}_{u}\) with the first subsample, and sample covariance estimate \(\hat{\Sigma}^{2,v}_{u}\) with the second subsample and let the criterion function be
+\begin{equation*}
+    L(a, b) = \frac{1}{V} \sum_{v}^{V} \norm{\hat{S}^{1,v}_{u} - \hat{\Sigma}^{2,v}_{u}}^{2}_{F}
+\end{equation*}
+we find \(\hat{a},\hat{b}\) that minimise this criterion subject to the constraints:
+\begin{align}
+    0 \leq a \sqrt{\frac{\log N}{T}} &\leq 1 \\
+    b \sqrt{\frac{\log N}{T}} &\leq 0 \\
+    \underline{\delta} &\leq a + b 
+\end{align}
+
+The final estimate is 
+\begin{equation*}
+    \hat{S}\pqty{\hat{a}, \hat{b}}
+\end{equation*}
+
+\subsection{Empirical Study}
+
+I have done a (coarser) version of the task of portfolio construction considered in \cite{ledoit2004HoneyShrunk} and \cite{ledoit2017NonlinearShrinkage}. We collect daily data on SP500 stock returns \(R_{it}\) from 2006 to the end of 2017; FF3 factor returns \(F_{kt}, k =1,2,3\) and risk free rates \(R_{f,t}\); Hoberg's network score matrices \(G_{t}\) that are updated yearly. 
+
+Due to computation time, I started with \(\hat{a},\hat{b}\) estimated using \textbf{full sample}(\blue{this need to be modified so that we don't use future knowledge in a rolling-window test}). For all the \(N = 415\) stocks after removing the factor component, I use the sample covariance matrix \(S_{\hat{u}} = \frac{1}{T} \hat{u}_{t}\hat{u}_{t}'\) to find the minimum threshold level \(\underline{\delta}\), and the estimate \(\hat{a}_{T},\hat{b}_{T}\), with \(V = 4\).
+
+Then for each 252-day window, I repeat the procedure of (1) getting de-factored residuals from time series regressions and (2) \textit{adaptive correlation thresholding} on sample covariance estimated from residuls in the period, with \(\hat{a},\hat{b}\) fixed at the \(\hat{a}_{T}, \hat{b}_{T}\).
+
+Our esimtate for each window \(m= 1, \dots,M\), is \(\hat{\Sigma}_{Y,w} = \hat{B}\hat{\Sigma}_{F}\hat{B}' + \hat{S}_{u}\pqty{\hat{a}_{T}, \hat{b}_{T}}\). Then we construct a minimum-variance portfolio by 
+\begin{equation*}
+    w_{m} = \frac{\mathbf{1}' \hat{\Sigma}_{Y,m}}{ \mathbf{1}' \hat{\Sigma}_{Y,m} \mathbf{1}}
+\end{equation*}
+and find the daily portfolio return in the following month (21 days) by
+\begin{equation*}
+    w_{m} R_{t}
+\end{equation*}
+
+Then we will have a time series of daily portfolio returns from 2007 to 2017 and we compute the standard deviation, average return and the Sharpe ratio. The results are in \autoref{table:empirical-2020-12-13T171549}
+
+\input{Covariance-Estimation-with-Auxiliary-Information/asset/table-2020-12-13T172351.tex}
+
+The new estimator is superior to linear shrinkage estimator in all three aspects, and only loses to nonlinear shrinkage in terms of standard deviation. 
+
+This result is however, not very robust, especially in the cross-validation estimation of \(a,b\) step and I have made the changes to calculate \(\underline{\delta}\) and \(\hat{a},\hat{b}\) on a rolling-basis. 

@@ -1,0 +1,70 @@
+Codes can be found here \href{https://github.com/lwg342/Covariance-Estimation-with-Auxiliary-Information}{Repo Link}
+    \subsection{Simulation 1}
+        We generate \(T = 100\) independent samples from \(p = 400\) dimensional normal distribution \(N(0, \Sigma_{1})\), where \(\Sigma_{1}\) is constructed by concatenating four AR(1) serial correlation matrix with ones on the diagonal and parameter \(\rho = 0.9\). The network \(G = [G_{ij}]\) where \(G_{ij} = 1\) if \(\sigma_{ij} > 0.6\). 
+        
+        Given the \(T = 100\) sample and the \(G\) matrix, we compute the correlation matrix \(R\) and apply the hard threshold function \(h(r_{ij}, \tau_{ij})\) to the off-diagonal elements of \(R\), that is 
+        \begin{equation*}
+            h(r_{ij}, \tau_{ij}) = r_{ij} \mathbf{1}\pqty{\abs{r_{ij}} > \tau_{ij} \& i \neq j}
+        \end{equation*}
+        the \(\tau_{ij}\) depends on \(G_{ij}\) and is specified here as probit function so that it's between \(0, 1\)
+        \begin{equation*}
+            \tau_{ij} = \Phi(a + b G_{ij})
+        \end{equation*}
+        
+        The following \autoref{table:1} describes the Frobenius-norm error using different estimators, the new estimator which is optimized to minimise the Frobenius error, has good performance. 
+         In \autoref{fig:1} we show the heatmaps of the true \(\Sigma\) and the estimates. Perhaps using a softer thresholding function will give better result. 2. We are trying more meaningful specification of \(\Sigma\) and we suspect that the new estimator will be good at preserving  important structural features of the covariance.
+        
+        \begin{table}[htbp]
+            \centering
+            \begin{tabular}{ll}
+            New estimator               & 35.5759973173453  \\
+            Linear shrinkage    & 36.44438551876532 \\
+            Nonlinear shrinkage & 35.09953816084891 \\
+            Sample              & 40.62939042523703 \\
+            Sample - New        & 49.10202294326661
+            \end{tabular}
+            \caption{Difference with true \(\Sigma\) in terms of Frobenius Norm}
+            \label{table:1}
+        \end{table}
+   
+        \begin{figure}[tbp]
+            \centering
+            \makebox[\textwidth][c]{\includegraphics[width=1.8\textwidth]{Covariance-Estimation-with-Auxiliary-Information/asset/fig/Heatmap--2020112418.eps}}
+            \caption{Comparison between the heatmaps of the matrices}
+            \label{fig:1}
+        \end{figure}        
+
+        
+        We have tried different specifications of the true \(\Sigma\) and repeated this calculation. For some specifications, the results are unstable: either it's difficult to find the minimum, or the result performs no better than the sample covariance estimate. I have also tried linear function \(\tau_{ij} = a + bG_{ij}\) and direct hard thresholding \(\tau_{ij} = G_{ij}\).  We are still improving the code for solving this model.
+    \subsection{Simulation 2}
+        Here we do a simulation on the case where \(G\) contains no real information. 
+        
+    \newpage
+    \subsection{Empirical Study}
+        We consider the estimation of covariance matrix among assets, where we supppose excess returns \(Y_{it}\) has a factor model + sparse structure:
+        \begin{equation*}
+            Y_{it} = B_{i} ' F_{t} + u_{it}
+        \end{equation*}
+        where \(\Sigma_{u}\) is assumed to be sparse. In addition to observaions of \(Y_{it}\) we have the similarity score network \(G\) from \cite{hoberg2016TextBasedNetwork}. Out of all pairs of assets, around \(2.5\%\) has score. We have matched the return data with the network and done the following
+        
+        \begin{enumerate}
+            \item Compute the sample covariance matrix \(\hat{\Sigma}_{Y}\);
+            \item Find the 3 largest eigenvalue \(\lambda_{1},\lambda_{2}, \lambda_{3}\) of \(\hat{\Sigma}_{Y}\) and the corresponding eigenvectors \(v_{1}, v_{2}, v_{3}\), and get \(\hat{\Sigma}_{u} = \hat{\Sigma}_{Y} - \sum_{k}^{3} \lambda_{k} v_{k} v_{k}' \)
+            \item We compute the correlation matrix \(R_{u}\), and plot the density of the correlation coefficients \(r_{ij}\). 
+            \item We compute the density of the correlation coefficient of \(r_{ij}\) for those \((i,j)\) pair that \(G_{ij} = 1\). 
+        \end{enumerate}
+        The result is the following two graphs. Both graphs don't include the diagonal \(1\)'s. 
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics{Covariance-Estimation-with-Auxiliary-Information/asset/fig/density-corr-plots-hoberg.eps}
+            \caption{Density Plot of \(r_{ij}\) for \((i,j)\) that has link in Hoberg's Network}
+            \label{<label>}
+        \end{figure}
+
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics{Covariance-Estimation-with-Auxiliary-Information/asset/fig/density-corr-plots.eps}           
+            \caption{Density Plots of \(r_{ij}\)}
+        \end{figure}       
+
+        We are still coding for the empirical estimation of the covariance, so no final result, but it seems that even after removing the factor component, there is some signal in the network information that we can use to estimate the covariance.

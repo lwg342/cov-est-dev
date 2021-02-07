@@ -1,0 +1,40 @@
+    With the technology such as machine learning based textual analysis, we have acquired a lot of auxiliary information about the linkage between companies, industries and so on. Can we use that information to better estimate the co-movement between assets?
+
+    Let \(Y = \pqty{Y_{1},\dots,Y_{p}}'\) be a random vector of excess returns, we want to estimate the covaraince \(\Sigma = \variance\pqty{Y}\). 
+
+    \cite{bickel2008CovarianceRegularization} considers banding or tapering the sample covariance matrix. \cite{bickel2008CovarianceRegularization} considers covariance regularization by hard thresholding. 
+    \begin{review}[\cite{bickel2008CovarianceRegularization}] 
+        Define \(T_{s}(M) = \bqty{m_{ij} \mathbf{1}_{\abs{m_{ij} \geq s}}}\). Define the uniformity class for \(0 \leq q < 1\) 
+        \begin{equation}
+            \mathcal{U}_{\tau}(q,c_{0}(q),M) = \Bqty{\Sigma: \sigma_{ii}\leq M, \sum_{j}\abs{\sigma_{ij}}^{q}\leq c_{0}(p), \forall i}
+        \end{equation}
+        They show that for sufficiently large \(M'\), \(t_{n} = M'\sqrt{\frac{\log p}{n}} \) and \(\log p /n \to 0\), 
+        \begin{equation}
+            \hat{\Sigma} = \frac{1}{n} \sum_{k} \pqty{Y_{k} - \bar{Y}}\pqty{Y_{k} - \bar{Y}}'
+        \end{equation}
+        \begin{equation}
+            \norm{T_{t_{n}}(\hat{\Sigma}) - \Sigma} = O_{p}\pqty{c_{0}(p) \pqty{\frac{\log p}{n}}^{(1-q)/2}}
+        \end{equation}
+    \end{review}
+
+
+    \begin{review}[\cite{cai2011AdaptiveThresholding}]
+        Adaptive thresholding where instead of doing \(T_{t_{n}}\), threshold as:
+        \begin{equation}
+            \hat{\sigma}_{ij}^{*} = s_{t_{ij}}\pqty{\hat{\sigma}_{ij}}
+        \end{equation}
+        where \begin{enumerate*}
+            \item \(\abs{s_{\lambda}(z)} \leq c \abs{y}\) for all \(\abs{z - y}\leq \lambda\)
+            \item \(s_{\lambda}(z) = 0\) for \(\abs{z}\leq \lambda\)
+            \item \(\abs{s_{\lambda}(z) - z} \leq \lambda\).
+        \end{enumerate*}
+
+        The convergence rate is the same, although here the uniformity class is larger. 
+    \end{review}
+    \begin{review}[\cite{fan2016IncorporatingGlobal}]
+        They use hard thresholding based on the sector/industry classifier. \(s_{ij}(\sigma_{ij})= \sigma_{ij}\) if \(ij\) are in the same industry. 
+
+        And they are in a high-frequency setting. 
+    \end{review}
+
+    \cite{ledoit2004HoneyShrunk} develops an estimation strategy based on shrinkage. 
