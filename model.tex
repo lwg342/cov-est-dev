@@ -2,15 +2,15 @@ The goal is to estimate \(\Sigma =\variance(y)\) where \(y\) is a \(p \times 1\)
 
 If in addition to the observaion of \(Y\), we have identified from textual analysis a network \(G\) among the firms, where \(G_{ij} = 1\) implies that it's ``likely'' that the returns of firm \(i,j\) are correlated. For example, \cite{hoberg2016TextBasedNetwork} identifies a product similarity network from financial reports that have better performance than industry block diagonal matrix. Linked firms are potentially subject to similar demand shock in that specific industry. 
 
-The question is how we can extract the information contained in these analyses to help estimate the covaraince \(\Sigma\).
+The question is how we can extract the information contained in these analyses to help estimate the covaraince \(\Sigma\). 
 
 This paper proposes the following \textit{adaptive thresholding with auxiliary information} method, suppose we observe \(Y_{t}\) for \(t = 1 ,\dots, T\):
 \begin{enumerate}
     \item Estimate the sample covariance estimate \(\hat{\Sigma}\), and the sample correlation matrix \(\hat{R}\). 
-    \item Apply the generalized thresholding function \(h(r_{ij},\tau_{ij})\) to the off-diagonal elements of \(\hat{R}\), \cite{rothman2009GeneralizedThresholding}. The novelty is now we allow the threshold \(\tau_{ij}\) to vary across elements and to depend on the network information.  Specifications we have considered for the threshold \(\tau\) are 
+    \item Apply the generalized thresholding function \(h(r_{ij},\tau_{ij})\) to the off-diagonal elements of \(\hat{R} = (\hat{r}_{ij})\), \cite{rothman2009GeneralizedThresholding}. The novelty is now we allow the threshold \(\tau_{ij}\) to vary across elements and to depend on the network information.  Specifications we have considered for the threshold \(\tau\) are 
     \begin{itemize}
         \item 
-        the probit model
+        The probit model
             \begin{equation*}
             \tau_{ij} = \tau\pqty{G_{ij}} = \Phi\pqty{a + b \abs{G_{ij}}}
             \end{equation*}
