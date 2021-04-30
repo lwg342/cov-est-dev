@@ -1,40 +1,19 @@
-    With the technology such as machine learning based textual analysis, we have acquired a lot of auxiliary information about the linkage between companies, industries and so on. Can we use that information to better estimate the co-movement between assets?
+    % With the technology such as machine learning based textual analysis, we have acquired a lot of auxiliary information about the linkage between companies, industries and so on. Can we use that information to better estimate the co-movement between assets?
+    There has been extensive research on high-dimensional covariance estimation. Some important lines of thinking include element-wise banding and thresholding method, shrinkage method, factor models, etc. For a book-length review see \cite{pourahmadi2013HighdimensionalCovariance}.\\
+    
+    \cite{bickel2008CovarianceRegularization} considers banding or tapering the sample covariance matrix. \cite{bickel2008CovarianceRegularization} considers covariance regularization by hard thresholding. They also compare the results between banding when there is a natural ordering(for example, time series autocorrelation) and thresholding where we need to pay a \(\log p\)  price in the convergence rate to learn the locations. 
+    \cite{cai2011AdaptiveThresholding} considers adptive thresholding where threshold takes the form:
+    \begin{equation}
+        \hat{\sigma}_{ij}^{*} = s_{t_{ij}}\pqty{\hat{\sigma}_{ij}}
+    \end{equation}
+    where \begin{enumerate*}
+        \item \(\abs{s_{\lambda}(z)} \leq c \abs{y}\) for all \(\abs{z - y}\leq \lambda\)
+        \item \(s_{\lambda}(z) = 0\) for \(\abs{z}\leq \lambda\)
+        \item \(\abs{s_{\lambda}(z) - z} \leq \lambda\).
+    \end{enumerate*}
+    The convergence rate is the same, although here the uniformity class is larger. \cite{fan2015OverviewEstimation} proposes thresholding on the correlation matrix. The choice of thresholding functions can be found \cite{rothman2009GeneralizedThresholding}, \cite{fan2001VariableSelection}, etc. \\
+    
+    As an application of thresholding method, \cite{fan2016IncorporatingGlobal} use hard thresholding method in a high-frequency setting based on the sector/industry classifier. \(s_{ij}(\sigma_{ij})= \sigma_{ij}\) if \(ij\) are in the same industry. The network they use is a block-diagonal matrix and our results accommodate more general and flexible network information. \\
 
-    Let \(Y = \pqty{Y_{1},\dots,Y_{p}}'\) be a random vector of excess returns, we want to estimate the covaraince \(\Sigma = \variance\pqty{Y}\). 
-
-    \cite{bickel2008CovarianceRegularization} considers banding or tapering the sample covariance matrix. \cite{bickel2008CovarianceRegularization} considers covariance regularization by hard thresholding. 
-    \begin{review}[\cite{bickel2008CovarianceRegularization}] 
-        Define \(T_{s}(M) = \bqty{m_{ij} \mathbf{1}_{\abs{m_{ij} \geq s}}}\). Define the uniformity class for \(0 \leq q < 1\) 
-        \begin{equation}
-            \mathcal{U}_{\tau}(q,c_{0}(q),M) = \Bqty{\Sigma: \sigma_{ii}\leq M, \sum_{j}\abs{\sigma_{ij}}^{q}\leq c_{0}(p), \forall i}
-        \end{equation}
-        They show that for sufficiently large \(M'\), \(t_{n} = M'\sqrt{\frac{\log p}{n}} \) and \(\log p /n \to 0\), 
-        \begin{equation}
-            \hat{\Sigma} = \frac{1}{n} \sum_{k} \pqty{Y_{k} - \bar{Y}}\pqty{Y_{k} - \bar{Y}}'
-        \end{equation}
-        \begin{equation}
-            \norm{T_{t_{n}}(\hat{\Sigma}) - \Sigma} = O_{p}\pqty{c_{0}(p) \pqty{\frac{\log p}{n}}^{(1-q)/2}}
-        \end{equation}
-    \end{review}
-
-
-    \begin{review}[\cite{cai2011AdaptiveThresholding}]
-        Adaptive thresholding where instead of doing \(T_{t_{n}}\), threshold as:
-        \begin{equation}
-            \hat{\sigma}_{ij}^{*} = s_{t_{ij}}\pqty{\hat{\sigma}_{ij}}
-        \end{equation}
-        where \begin{enumerate*}
-            \item \(\abs{s_{\lambda}(z)} \leq c \abs{y}\) for all \(\abs{z - y}\leq \lambda\)
-            \item \(s_{\lambda}(z) = 0\) for \(\abs{z}\leq \lambda\)
-            \item \(\abs{s_{\lambda}(z) - z} \leq \lambda\).
-        \end{enumerate*}
-
-        The convergence rate is the same, although here the uniformity class is larger. 
-    \end{review}
-    \begin{review}[\cite{fan2016IncorporatingGlobal}]
-        They use hard thresholding based on the sector/industry classifier. \(s_{ij}(\sigma_{ij})= \sigma_{ij}\) if \(ij\) are in the same industry. 
-
-        And they are in a high-frequency setting. 
-    \end{review}
-
-    \cite{ledoit2004HoneyShrunk} develops an estimation strategy based on shrinkage. 
+    \cite{ledoit2004HoneyShrunk} develops an estimation strategy based on linear shrinkage, where the target is identity matrix. This shrinkage guarantees that the estimated covariance matrix is well-conditioned. This approach can be thought of as decreasing variance at the expense of increasing bias a little. There are articles discuss multiple targets, for example, \cite{schafer2005ShrinkageApproach}, \cite{lancewicki2014MultiTargetShrinkage} and \cite{gray2018ShrinkageEstimation}, but their targets are either fixed or data-driven, so different from our guided method where we bring in new information from auxiliary network information. 
+    \cite{ledoit2012NonlinearShrinkage} and \cite{ledoit2017NonlinearShrinkage} propose nonlinear shrinkage where the eigenvalues are pulled towards the ``correct level'' solving a nonrandom limit loss function. The shrinkage method has been shown to have really good performance in estimating large-dimensional covariance matrix, however they are a global method whereas our method is designed to emphasize ``economically meaning'' links. There is also a vast literature on factor models in high-dimensional models and applications in empirical finance. We refer to \cite{connor2012EfficientSemiparametric}, \cite{fan2015OverviewEstimation} and \cite{fan2016ProjectedPrincipal} and literature review therein. 

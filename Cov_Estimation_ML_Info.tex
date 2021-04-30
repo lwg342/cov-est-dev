@@ -1,17 +1,29 @@
 \documentclass[12pt]{article}
-\usepackage{myart}\addbibresource{/Users/lwg342/Documents/LaTeX/lib.bib}
+\usepackage{myart}\addbibresource{lib.bib}
+\addbibresource{lib1.bib}
+\usepackage{booktabs}\usepackage{authblk}
 %--------Hello World--------%
 %=====================================%
 \begin{document}
-    \title{Large Covariance Matrix Estimation With Auxiliary Information}\author{Shuyi Ge, Shaoran Li, Oliver Linton, Weiguang Liu}\maketitle
-    \tableofcontents
+    \title{Augment Large Covariance Matrix Estimation With Auxiliary Network Information}
+    \author[]{Shuyi Ge\thanks{Author email:sg751@cam.ac.uk}}
+    \author[]{Shaoran Li\thanks{Author email:sl736@cam.ac.uk}}
+    \author[]{Oliver Linton\thanks{Author email:obl20@cam.ac.uk}}
+    \author[]{Weiguang Liu\thanks{Author email:wl342@cam.ac.uk}}
+    \affil[]{Faculty of Economics, University of Cambridge}
+    \maketitle
+    % \tableofcontents
     
-    \section{Literature Review}\input{literature-review.tex}
+    \begin{abstract}
+        This paper aims to incorporate auxiliary information about the location of significant correlations into the estimation of high-dimensional covariance matrices. With the development of machine learning techniques such as textual analysis, granular linkage information among firms that used to be notoriously hard to get are now becoming available to researchers. Our proposed method provides an avenue for combining those auxiliary network information with traditional economic datasets to improve the estimation of a large covariance matrix. Simulation results show that the proposed adaptive correlation thresholding method generally performs better in the estimation of covariance matrices than previous methods, especially when the true covariance matrix is sparse and the auxiliary network contains genuine information. As a preliminary application, we apply the method to the estimation of the covariance matrix of asset returns. There are several extensions and improvements that we are considering.     
+    \end{abstract}
+    
     \section{Model and Introduction}\input{model.tex}
+    \section{Literature Review}\input{literature-review.tex}
     \section{Simulation}\input{simulation.tex} 
     \section{Empirical Study}\input{empirical.tex}
+    \section{Conclusion and Further Works}\input{conclud.tex}
 
-    % \section{Model in Linear Regression}\input{lin-reg-theory.tex}
     % \section{Log}% \input{log.tex}
 % The End
 \printbibliography

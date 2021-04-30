@@ -1,70 +1,194 @@
-Codes can be found here \href{https://github.com/lwg342/Covariance-Estimation-with-Auxiliary-Information}{Repo Link}
-    \subsection{Simulation 1}
-        We generate \(T = 100\) independent samples from \(p = 400\) dimensional normal distribution \(N(0, \Sigma_{1})\), where \(\Sigma_{1}\) is constructed by concatenating four AR(1) serial correlation matrix with ones on the diagonal and parameter \(\rho = 0.9\). The network \(G = [G_{ij}]\) where \(G_{ij} = 1\) if \(\sigma_{ij} > 0.6\). 
-        
-        Given the \(T = 100\) sample and the \(G\) matrix, we compute the correlation matrix \(R\) and apply the hard threshold function \(h(r_{ij}, \tau_{ij})\) to the off-diagonal elements of \(R\), that is 
-        \begin{equation*}
-            h(r_{ij}, \tau_{ij}) = r_{ij} \mathbf{1}\pqty{\abs{r_{ij}} > \tau_{ij} \& i \neq j}
-        \end{equation*}
-        the \(\tau_{ij}\) depends on \(G_{ij}\) and is specified here as probit function so that it's between \(0, 1\)
-        \begin{equation*}
-            \tau_{ij} = \Phi(a + b G_{ij})
-        \end{equation*}
-        
-        The following \autoref{table:1} describes the Frobenius-norm error using different estimators, the new estimator which is optimized to minimise the Frobenius error, has good performance. 
-         In \autoref{fig:1} we show the heatmaps of the true \(\Sigma\) and the estimates. Perhaps using a softer thresholding function will give better result. 2. We are trying more meaningful specification of \(\Sigma\) and we suspect that the new estimator will be good at preserving  important structural features of the covariance.
-        
+% Codes can be found here \href{https://github.com/lwg342/Covariance-Estimation-with-Auxiliary-Information}{Repo Link}
+    % \subsection{Simulation 1}
+        We generate \(T = 200\) independent samples \(X\) from \(N = 500\) dimensional normal distribution \(N(0, \Sigma)\), where \(\Sigma_{ij} = \rho^{\abs{i-j}}\). We consider the following two types of generated networks, 
+        \begin{enumerate}
+            \item 
+        \(G_{1} = [G_{ij}]\) where \(G_{ij} = 1\) if \(\Sigma_{ij} > l\), so that we observe \(G_{ij} = 1\) if \(\Sigma_{ij}\) is larger than a threshold level \(l\) 
+        \item \(G_{2,ij} = \Sigma_{ij} + z_{ij}\), for \(j>i\), where \(z_{ij}\) are independently drawn from \(N(0, \sigma^{2})\), so that \(G_{2,ij}\) provides a noisy observation of \(\Sigma\). We simulate with varying parameters \(l\) and \(\sigma\). 
+        \end{enumerate}
+
+        The following four tables,  shows the simulation results. The new adaptive correlation thresholding estimator performs better than  shrinkage methods and simple sample covariance in terms of both the matrix \(1\)-norm and Frobenius norm of the estimation errors, when the \(G\) provides more accurate information about the true covariance matrices (when \(l\) and \(\sigma\) is smaller); and also when the true covariance \(\Sigma\) is more sparse, the adaptive correlation thresholding seems to perform better. 
         \begin{table}[htbp]
             \centering
-            \begin{tabular}{ll}
-            New estimator               & 35.5759973173453  \\
-            Linear shrinkage    & 36.44438551876532 \\
-            Nonlinear shrinkage & 35.09953816084891 \\
-            Sample              & 40.62939042523703 \\
-            Sample - New        & 49.10202294326661
-            \end{tabular}
-            \caption{Difference with true \(\Sigma\) in terms of Frobenius Norm}
-            \label{table:1}
+            \caption{The Frobenius norm of the true \(\Sigma\) and the Frobenius norm of the difference between the estimates and \(\Sigma\).We observe \(G_{1}\) which is \(\mathbf{1}\Bqty{\Sigma_{ij} \geq l}\) }          
+            \begin{tabular}{ll|ccccc}
+                \toprule
+                Observe \(G_{1}\) && \(\Sigma\) &Sample  &Linear  &Nonlinear &Adaptive Corr \\
+                \(\rho\) &\(l\) &&Covariance&Shrinakage&Shrinakage&Thresholding\\
+                \midrule
+                0.80 &0.5 &47.62 &34.32 &27.12 &26.63 &15.13 \\
+                     &0.6 &47.62 &35.16 &27.29 &26.71 &14.18 \\
+                     &0.7 &47.62 &35.95 &26.93 &26.34 &14.14 \\
+                     &0.8 &47.62 &35.97 &27.20 &26.58 &14.82 \\
+                     &0.9 &47.62 &35.10 &27.33 &26.79 &16.65 \\
+                0.90 &0.5 &68.69 &35.85 &30.54 &29.34 &20.49 \\
+                     &0.6 &68.69 &35.08 &32.01 &30.99 &30.08 \\
+                     &0.7 &68.69 &35.58 &31.00 &29.84 &25.66 \\
+                     &0.8 &68.69 &36.04 &31.31 &30.23 &20.94 \\
+                     &0.9 &68.69 &36.50 &31.71 &30.50 &24.82 \\
+                0.95 &0.5 &97.81 &35.31 &32.77 &31.48 &34.57 \\
+                     &0.6 &97.81 &36.22 &33.56 &32.58 &33.83 \\
+                     &0.7 &97.81 &36.75 &34.22 &33.01 &32.12 \\
+                     &0.8 &97.81 &37.22 &34.23 &33.03 &40.94 \\
+                     &0.9 &97.81 &38.67 &35.38 &34.12 &29.11 \\
+                0.99 &0.5 &211.66 &40.78 &44.90 &44.26 &85.67 \\
+                     &0.6 &211.66 &41.79 &39.84 &41.41 &57.07 \\
+                     &0.7 &211.66 &34.65 &36.47 &40.24 &62.38 \\
+                     &0.8 &211.66 &41.71 &41.20 &42.50 &77.88 \\
+                     &0.9 &211.66 &39.22 &33.44 &38.06 &47.69 \\
+                \bottomrule
+                \end{tabular}      
         \end{table}
+        
+        \begin{table}
+                \caption{The Frobenius norm of the true \(\Sigma\) and the Frobenius norm of the difference between the estimates and \(\Sigma\).}
+            \begin{tabular}{ll|ccccc}
+                \toprule
+                   Observe \(G_{2}\) && \(\Sigma\) &Sample  &Linear  &Nonlinear &Adaptive Corr \\
+                \(\rho\) &\(\sigma\) &&Covariance&Shrinakage&Shrinakage&Thresholding\\
+                \midrule
+                0.80 &0.0 &47.62 &35.64 &27.36 &26.73 &15.46 \\
+                     &0.1 &47.62 &35.99 &26.99 &26.41 &15.61 \\
+                     &0.2 &47.62 &35.87 &27.06 &26.42 &14.60 \\
+                     &0.3 &47.62 &35.55 &27.20 &26.59 &14.84 \\
+                     &0.4 &47.62 &35.89 &27.46 &26.82 &17.21 \\
+                0.90 &0.0 &68.69 &36.93 &31.73 &30.38 &28.81 \\
+                     &0.1 &68.69 &35.86 &32.29 &30.97 &22.32 \\
+                     &0.2 &68.69 &36.09 &31.73 &30.65 &35.13 \\
+                     &0.3 &68.69 &34.65 &30.97 &30.06 &20.21 \\
+                     &0.4 &68.69 &34.61 &30.94 &30.15 &23.54 \\
+                0.95 &0.0 &97.81 &37.62 &33.57 &32.14 &25.91 \\
+                     &0.1 &97.81 &37.20 &33.72 &33.17 &27.94 \\
+                     &0.2 &97.81 &33.57 &30.47 &29.91 &25.93 \\
+                     &0.3 &97.81 &34.82 &31.75 &31.04 &25.30 \\
+                     &0.4 &97.81 &34.79 &33.65 &32.82 &33.42 \\
+                0.99 &0.0 &211.66 &31.72 &30.93 &32.38 &68.24 \\
+                     &0.1 &211.66 &36.74 &40.73 &38.74 &73.51 \\
+                     &0.2 &211.66 &40.72 &36.44 &38.85 &51.01 \\
+                     &0.3 &211.66 &29.65 &30.13 &29.98 &72.43 \\
+                     &0.4 &211.66 &47.19 &41.00 &45.82 &120.97 \\
+                \bottomrule
+                \end{tabular}                
+        \end{table}
+        
+
+        \begin{table}
+            
+            \caption{The matrix 1 norm of the true \(\Sigma\) and the matrix 1 norm of the difference between the estimates and \(\Sigma\). We observe \(G_{1}\) which is \(\mathbf{1}\Bqty{\Sigma_{ij} \geq l}\)}
+            \begin{tabular}{ll|ccccc}
+                \toprule
+                Observe \(G_{1}\) && \(\Sigma\) &Sample  &Linear  &Nonlinear &Adaptive Corr \\
+                \(\rho\) &\(l\) &&Covariance&Shrinakage&Shrinakage&Thresholding\\
+                \midrule
+                0.80 &0.0 &47.62 &35.68 &22.47 &22.44 &17.73 \\
+                     &0.1 &47.62 &35.12 &22.29 &22.54 &14.82 \\
+                     &0.2 &47.62 &37.76 &22.90 &22.03 &17.45 \\
+                     &0.3 &47.62 &34.04 &21.65 &22.14 &15.26 \\
+                     &0.4 &47.62 &35.84 &22.97 &22.16 &14.76 \\
+                0.90 &0.0 &68.69 &45.61 &33.59 &30.95 &17.91 \\
+                     &0.1 &68.69 &39.91 &30.26 &29.55 &20.97 \\
+                     &0.2 &68.69 &41.63 &30.64 &30.02 &22.20 \\
+                     &0.3 &68.69 &37.60 &30.26 &28.93 &20.29 \\
+                     &0.4 &68.69 &37.34 &29.15 &28.04 &23.21 \\
+                0.95 &0.0 &97.81 &43.60 &42.74 &43.00 &47.35 \\
+                     &0.1 &97.81 &39.52 &37.92 &36.84 &31.95 \\
+                     &0.2 &97.81 &42.50 &41.81 &38.80 &49.32 \\
+                     &0.3 &97.81 &45.70 &40.13 &40.16 &30.88 \\
+                     &0.4 &97.81 &43.21 &37.86 &34.72 &28.48 \\
+                0.99 &0.0 &211.66 &81.33 &72.85 &77.99 &35.73 \\
+                     &0.1 &211.66 &50.42 &43.82 &53.34 &48.87 \\
+                     &0.2 &211.66 &52.14 &55.42 &54.08 &80.27 \\
+                     &0.3 &211.66 &66.11 &58.51 &60.91 &51.53 \\
+                     &0.4 &211.66 &53.18 &45.68 &48.64 &48.46 \\
+                \bottomrule
+                \end{tabular}                
+        \end{table}
+
+
+        \begin{table}
+            
+            \caption{The matrix 1 norm of the true \(\Sigma\) and the matrix 1 norm of the difference between the estimates and \(\Sigma\).}                
+            \begin{tabular}{ll|ccccc}
+                \toprule
+                Observe \(G_{2}\) && \(\Sigma\) &Sample  &Linear  &Nonlinear &Adaptive Corr \\
+                \(\rho\) &\(\sigma\) &&Covariance&Shrinakage&Shrinakage&Thresholding\\
+                \midrule
+                0.80 &0.5 &47.62 &38.02 &23.62 &22.64 &15.23 \\
+                     &0.6 &47.62 &35.85 &22.57 &22.34 &14.76 \\
+                     &0.7 &47.62 &35.75 &22.06 &22.18 &15.11 \\
+                     &0.8 &47.62 &38.63 &24.90 &23.36 &14.23 \\
+                     &0.9 &47.62 &36.34 &21.73 &21.83 &15.35 \\
+                0.90 &0.5 &68.69 &37.90 &30.23 &28.42 &22.30 \\
+                     &0.6 &68.69 &44.40 &30.43 &29.72 &38.01 \\
+                     &0.7 &68.69 &37.73 &30.74 &29.48 &21.02 \\
+                     &0.8 &68.69 &38.40 &30.02 &29.34 &19.74 \\
+                     &0.9 &68.69 &38.24 &31.76 &29.07 &19.73 \\
+                0.95 &0.5 &97.81 &37.95 &36.71 &36.22 &29.38 \\
+                     &0.6 &97.81 &45.55 &38.66 &36.65 &31.78 \\
+                     &0.7 &97.81 &39.66 &35.85 &35.35 &29.67 \\
+                     &0.8 &97.81 &39.70 &39.31 &38.31 &32.88 \\
+                     &0.9 &97.81 &50.46 &39.55 &38.01 &41.03 \\
+                0.99 &0.5 &211.66 &50.51 &47.20 &49.90 &67.03 \\
+                     &0.6 &211.66 &43.32 &47.98 &48.10 &67.31 \\
+                     &0.7 &211.66 &43.90 &40.44 &41.07 &67.02 \\
+                     &0.8 &211.66 &64.95 &69.00 &70.53 &70.13 \\
+                     &0.9 &211.66 &42.75 &45.67 &45.99 &71.32 \\
+                \bottomrule
+                \end{tabular}
+                 
+        \end{table}
+        \newpage
+        % The following \autoref{table:1} describes the Frobenius-norm error using different estimators, the new estimator which is optimized to minimise the Frobenius error, has good performance. 
+        %  In \autoref{fig:1} we show the heatmaps of the true \(\Sigma\) and the estimates. Perhaps using a softer thresholding function will give better result. 2. We are trying more meaningful specification of \(\Sigma\) and we suspect that the new estimator will be good at preserving  important structural features of the covariance.
+        
+        % \begin{table}[htbp]
+            % \centering
+            % \begin{tabular}{ll}
+            % New estimator               &35.5759973173453  \\
+            % Linear shrinkage    &36.44438551876532 \\
+            % Nonlinear shrinkage &35.09953816084891 \\
+            % Sample              &40.62939042523703 \\
+            % Sample - New        &49.10202294326661
+            % \end{tabular}
+            % \caption{Difference with true \(\Sigma\) in terms of Frobenius Norm}
+            % \label{table:1}
+        % \end{table}
    
-        \begin{figure}[tbp]
-            \centering
-            \makebox[\textwidth][c]{\includegraphics[width=1.8\textwidth]{Covariance-Estimation-with-Auxiliary-Information/asset/fig/Heatmap--2020112418.eps}}
-            \caption{Comparison between the heatmaps of the matrices}
-            \label{fig:1}
-        \end{figure}        
+        % \begin{figure}[tbp]
+        %     \centering
+        %     \makebox[\textwidth][c]{\includegraphics[width=1.8\textwidth]{Covariance-Estimation-with-Auxiliary-Information/asset/fig/Heatmap--2020112418.eps}}
+        %     \caption{Comparison between the heatmaps of the matrices}
+        %     \label{fig:1}
+        % \end{figure}        
 
         
-        We have tried different specifications of the true \(\Sigma\) and repeated this calculation. For some specifications, the results are unstable: either it's difficult to find the minimum, or the result performs no better than the sample covariance estimate. I have also tried linear function \(\tau_{ij} = a + bG_{ij}\) and direct hard thresholding \(\tau_{ij} = G_{ij}\).  We are still improving the code for solving this model.
-    \subsection{Simulation 2}
-        Here we do a simulation on the case where \(G\) contains no real information. 
-        
-    \newpage
-    \subsection{Empirical Study}
-        We consider the estimation of covariance matrix among assets, where we supppose excess returns \(Y_{it}\) has a factor model + sparse structure:
-        \begin{equation*}
-            Y_{it} = B_{i} ' F_{t} + u_{it}
-        \end{equation*}
-        where \(\Sigma_{u}\) is assumed to be sparse. In addition to observaions of \(Y_{it}\) we have the similarity score network \(G\) from \cite{hoberg2016TextBasedNetwork}. Out of all pairs of assets, around \(2.5\%\) has score. We have matched the return data with the network and done the following
-        
-        \begin{enumerate}
-            \item Compute the sample covariance matrix \(\hat{\Sigma}_{Y}\);
-            \item Find the 3 largest eigenvalue \(\lambda_{1},\lambda_{2}, \lambda_{3}\) of \(\hat{\Sigma}_{Y}\) and the corresponding eigenvectors \(v_{1}, v_{2}, v_{3}\), and get \(\hat{\Sigma}_{u} = \hat{\Sigma}_{Y} - \sum_{k}^{3} \lambda_{k} v_{k} v_{k}' \)
-            \item We compute the correlation matrix \(R_{u}\), and plot the density of the correlation coefficients \(r_{ij}\). 
-            \item We compute the density of the correlation coefficient of \(r_{ij}\) for those \((i,j)\) pair that \(G_{ij} = 1\). 
-        \end{enumerate}
-        The result is the following two graphs. Both graphs don't include the diagonal \(1\)'s. 
-        \begin{figure}[htbp]
-            \centering
-            \includegraphics{Covariance-Estimation-with-Auxiliary-Information/asset/fig/density-corr-plots-hoberg.eps}
-            \caption{Density Plot of \(r_{ij}\) for \((i,j)\) that has link in Hoberg's Network}
-            \label{<label>}
-        \end{figure}
+        % We have tried different specifications of the true \(\Sigma\) and repeated this calculation. For some specifications, the results are unstable: either it's difficult to find the minimum, or the result performs no better than the sample covariance estimate. I have also tried linear function \(\tau_{ij} = a + bG_{ij}\) and direct hard thresholding \(\tau_{ij} = G_{ij}\).  
 
-        \begin{figure}[htbp]
-            \centering
-            \includegraphics{Covariance-Estimation-with-Auxiliary-Information/asset/fig/density-corr-plots.eps}           
-            \caption{Density Plots of \(r_{ij}\)}
-        \end{figure}       
+    % \subsection{Empirical Study}
+    %     We consider the estimation of covariance matrix among assets, where we supppose excess returns \(Y_{it}\) has a factor model + sparse structure:
+    %     \begin{equation*}
+    %         Y_{it} = B_{i} ' F_{t} + u_{it}
+    %     \end{equation*}
+    %     where \(\Sigma_{u}\) is assumed to be sparse. In addition to observaions of \(Y_{it}\) we have the similarity score network \(G\) from \cite{hoberg2016TextBasedNetwork}. Out of all pairs of assets, around \(2.5\%\) has score. We have matched the return data with the network and done the following
+        
+    %     \begin{enumerate}
+    %         \item Compute the sample covariance matrix \(\hat{\Sigma}_{Y}\);
+    %         \item Find the 3 largest eigenvalue \(\lambda_{1},\lambda_{2}, \lambda_{3}\) of \(\hat{\Sigma}_{Y}\) and the corresponding eigenvectors \(v_{1}, v_{2}, v_{3}\), and get \(\hat{\Sigma}_{u} = \hat{\Sigma}_{Y} - \sum_{k}^{3} \lambda_{k} v_{k} v_{k}' \)
+    %         \item We compute the correlation matrix \(R_{u}\), and plot the density of the correlation coefficients \(r_{ij}\). 
+    %         \item We compute the density of the correlation coefficient of \(r_{ij}\) for those \((i,j)\) pair that \(G_{ij} = 1\). 
+    %     \end{enumerate}
+    %     The result is the following two graphs. Both graphs don't include the diagonal \(1\)'s. 
+    %     \begin{figure}[htbp]
+    %         \centering
+    %         \includegraphics{Covariance-Estimation-with-Auxiliary-Information/asset/fig/density-corr-plots-hoberg.eps}
+    %         \caption{Density Plot of \(r_{ij}\) for \((i,j)\) that has link in Hoberg's Network}
+    %         \label{<label>}
+    %     \end{figure}
 
-        We are still coding for the empirical estimation of the covariance, so no final result, but it seems that even after removing the factor component, there is some signal in the network information that we can use to estimate the covariance.
+    %     \begin{figure}[htbp]
+    %         \centering
+    %         \includegraphics{Covariance-Estimation-with-Auxiliary-Information/asset/fig/density-corr-plots.eps}           
+    %         \caption{Density Plots of \(r_{ij}\)}
+    %     \end{figure}       
+
+    %     We are still coding for the empirical estimation of the covariance, so no final result, but it seems that even after removing the factor component, there is some signal in the network information that we can use to estimate the covariance.

@@ -1,0 +1,35 @@
+\subsection{Application: Portfolio Management}
+
+We have done a portfolio construction similar to that considered in \cite{ledoit2004HoneyShrunk} and \cite{ledoit2017NonlinearShrinkage}. We collect daily data on SP500 stock returns \(R_{it}\) from 1996 to the end of 2017; FF3 factor returns \(F_{kt}, k =1,2,3\) and risk free rates \(R_{f,t}\); Hoberg's network score matrices \(G_{t}\) that are updated yearly. \(Y_{it} = R_{it} R_{f,t}\). 
+
+% Due to computation time, I started with \(\hat{a},\hat{b}\) estimated using \textbf{full sample}(\blue{this need to be modified so that we don't use future knowledge in a rolling-window test}). For all the \(N = 415\) stocks after removing the factor component, I use the sample covariance matrix \(S_{\hat{u}} = \frac{1}{T} \hat{u}_{t}\hat{u}_{t}'\) to find the minimum threshold level \(\underline{\delta}\), and the estimate \(\hat{a}_{T},\hat{b}_{T}\), with \(V = 4\).
+The Hoberg's Network is a yearly updated \(N\times N\) network with elements in \([0,1]\) with higher score \(G_{ij}\) reflecting potentially higher correlation between the \(i\)-th and \(j\)-th firms.
+
+We divide the sample into windows of an estimation periods of 252 days followed by 21-day testing period and then these two windows are shifted by 21 days. In the estimation periods in window  \(m= 1, \dots,M\) we construct estimate \(\hat{\Sigma}_{Y,m} = \hat{B}S_{F}\hat{B}' + \hat{S}_{\hat{u}}\pqty{\hat{a}_{m}, \hat{b}_{m}}\) and in the testing periods, we use this estimate to construct a portfolio with weights in a vector \(w_{m} = \frac{\mathbf{1}' \hat{\Sigma}_{Y,m}}{ \mathbf{1}' \hat{\Sigma}_{Y,m} \mathbf{1}}\) and we record the profolio return over the testing period \(w_{m}R_{t}\) for \(t\) in the testing period of window \(m\). In this way, we obtain a daily time series of portfolio returns and the portfolio is updated roughly monthly. 
+
+
+% Then we will have a time series of daily portfolio returns from 2007 to 2017 and we compute the standard deviation, average return and the Sharpe ratio. The results are in Table 1.
+
+
+% \begin{table}[htbp]
+%     \centering\begin{tabular}{l|cccc}
+%         \(\rho\) & 0.8 & 0.9 & 0.95 & 0.99\\ \hline\hline 
+%         Sample Covariance & 
+%     \end{tabular}
+%     \caption{Portfolio Performance using Different Estimators of \(\Sigma_{Y}\)}
+%     \label{table:port_ret}
+% \end{table}
+
+\begin{table}[htbp]
+    \begin{tabular}{l|lll}
+        & Standard deviation & Average Return \(\times\) 250 & Sharpe Ratio \\ 
+        \hline
+        Adaptive Corr Thresholding & 0.0059            & 0.101            & 0.0678       \\
+        Sample Covarinace & 0.150 & 1.949 & 0.0519 \\ 
+        FF3 + \(S_{\hat{u}}\) & 9.555 &22.04 & 0.0092 \\ 
+        Linear Shrinkage                  & 0.00573           & 0.101             & 0.0708       \\
+        % Nonlinear Shrinkage               & 0.00695*           & 0.0906              & 0.0521      
+    \end{tabular}
+    \caption{Comparison between different estimates}
+    \label{table:empirical-2020-12-13T171549}
+\end{table}
