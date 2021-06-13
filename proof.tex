@@ -1,0 +1,97 @@
+\documentclass[12pt]{article}
+\usepackage{myart}\addbibresource{/Users/lwg342/Documents/LaTeX/lib.bib}
+%--------Hello World--------%
+%=====================================%
+\newcommand{\indicator}[1]{\mathbf{1}_{#1}}
+\newcommand{\itm}[1]{\mathbf{#1}}
+\begin{document}
+    \section{Proof Strategy}
+    \subsection{Sparsity Condition 1, Thresholding}
+        Assume that there is a mapping \(L:(i,j) \mapsto \Bqty{0,1}\), representing the ``locations'' of large elements. For \(L_{ij} := L(i,j) = 1\) or \(0\),  the sparsity condition are different, i.e.,
+        \begin{equation*}
+            \sum_{j}^{p} \abs{\sigma_{ij}}^{q_{0}} \indicator{L_{ij} = 0} < c_{0}(p)
+        \end{equation*}
+        and 
+        \begin{equation*}
+            \sum_{j}^{p} \abs{\sigma_{ij}}^{q_{1}} \indicator{L_{ij} = 1} < c_{1}(p)
+        \end{equation*}
+        where \(c_{0}(p), c_{1}(p)\to \infty\) as \(p\to \infty\) , but might have different rate of divergence. The belief is when \(L_{ij}  = 1\) , although \(\sigma_{ij}\) might be large, the number of such \(\sigma_{ij}\) must be small, so the sparsity condition can hold with a smaller \(q\). Although there potentially are many \(L_{ij} = 0\), but each \(\sigma_{ij}\) will be small, and hence we can allow a relatively large \(q\). 
+        
+
+        Then following bickel, consider a hard thresholding estimator with adaptive thresholds, 
+        \begin{equation*}
+            T_{t,L}(\sigma_{ij}) = 
+            \begin{cases}
+                \sigma_{ij} \qq{if} \sigma_{ij} > t_{1} \qq{and} L_{ij} = 1 \\
+                \sigma_{ij} \qq{if} \sigma_{ij} > t_{0} \qq{and} L_{ij} = 0 \\
+                = 0 \qq{otherwise}
+            \end{cases}
+        \end{equation*}
+
+        In practice we might estimate \(L\) with \(\hat{L}\), 
+        We have the decomposition:
+        \begin{equation*}
+            \norm{T_{t,\hat{L}} (\hat{\Sigma}) - \Sigma} \leq \norm{T_{t,\hat{L}}(\Sigma) - \Sigma} + \norm{T_{t,\hat{L}}(\hat{\Sigma}) - T_{t,\hat{L}} (\Sigma)} = \itm{I} + \itm{II}
+        \end{equation*}
+
+        The first term \(\itm{I}\) can be bounded by the \(L^{1}\) norm, 
+        \begin{equation*}
+            \itm{I} \leq \max_{i} \sum_{j}^{p} \abs{\sigma_{ij}} \pqty{\hat{L}_{ij}^{0} \indicator{\abs{\sigma_{ij}} \leq t_{0}} + \hat{L}_{ij}^{1} \indicator{\abs{\sigma_{ij}} \leq t_{1}}}
+        \end{equation*}
+        where \(L_{ij}^{0} := \indicator{L_{ij} = 0}\), the location where \(L_{ij} = 0\).  
+        
+        \begin{align*}
+            \itm{I} \leq &\max_{i} \sum_{j} \abs{\sigma_{ij}} \pqty{{L}_{ij}^{0} \indicator{\abs{\sigma_{ij}} \leq t_{0}} + {L}_{ij}^{1} \indicator{\abs{\sigma_{ij}} \leq t_{1}}} + \max_{i}\sum_{j} \abs{\sigma_{ij}} \pqty{\indicator{\abs{\sigma_{ij}}\leq t_{0}} (\hat{L}_{ij}^{0} - L_{ij}^{0})} \\
+            &+ \max_{i}\sum_{j} \abs{\sigma_{ij}} \indicator{\abs{\sigma_{ij}} \leq t_{1}} \pqty{\hat{L}_{ij}^{1} - L_{ij}^{1}} \\
+            &= \itm{I_{1}} + \itm{I_{2}} + \itm{I_{3}}
+        \end{align*}
+
+        Assume that \(\max_{ij} \abs{\hat{L}_{ij}^{0} - L_{ij}^{0}} = O_{p}(k_{n})\). 
+        % (perhaps this can be justified by a condition on \(E \bqty{\hat{L}_{ij}^{0} - L_{ij}^{0}}\)). 
+        Then we have 
+        \begin{equation*}
+            \itm{I} \lesssim t_{0}^{1-q_{0}} c_{0} + t_{1}^{1-q_{1}} c_{1} + \red{\itm{I_{2}} + \itm{I_{3}}} 
+        \end{equation*}
+        
+        For \(\red{\itm{I_{2}}}\), we have  
+        \begin{equation*}
+            \itm{I_{2}} = \max_{i} \sum_{j} \abs{\sigma_{ij}} \pqty{\indicator{\abs{\sigma_{ij}} \leq t_{0}} (\hat{L}_{ij}^{0} - L_{ij}^{0}) } \lesssim t_{0}^{1-q_{1}} c_{1}(p) k_{n}   
+        \end{equation*}
+        and for \(\itm{I_{3}}\) we have, 
+        \begin{equation*}
+            \itm{I_{3}} = \max_{i} \sum_{j} \abs{\sigma_{ij}} \pqty{\indicator{\abs{\sigma_{ij}}\leq t_{1}} (\hat{L}_{ij}^{1} - L_{ij}^{1})} \lesssim t_{1}^{1-q_{0}} c_{0}(p) k_{n}    
+        \end{equation*}
+        Hence, \(I \lesssim c_{1} (t_{1}^{1 - q_{1}} + k_{n} t_{0}^{1-q_{1}}) + c_{0} (t_{0}^{1-q_{0}} + k_{n} t_{1}^{1-q_{0}})\).
+
+        For Item \(\itm{II}\), we can decompose it like in Bickel and Levina, (\href{https://github.com/lwg342/cov-est-dev/blob/dev/hw-2021-05-26.pdf}{handwriting}):
+        \begin{equation*}
+            \itm{II} \lesssim c_{1} \pqty{t_{1}^{-q_{1}} \sqrt{\frac{\log p}{n}} + k_{n} t_{0}^{-q_{1}}\sqrt{\frac{\log p}{n}} + t_{1}^{1-q_{1}} + k_{n} t_{0} ^{1- q_{1}}} + c_{0} \pqty{t_{0}^{-q_{0}} \sqrt{\frac{\log p}{n}} + k_{n} t_{1}^{-q_{0}} \sqrt{\frac{\log p}{n}} + t_{0} ^{1-q_{0}} + k_{n} t_{1}^{1-q_{0}}}
+        \end{equation*} 
+
+        The thing is that if \(k_{n} = o(1)\), both \(t_{1}, t_{0}\) are of order \(\sqrt{\log p / n}\). 
+
+    \subsection{Sparsity Condition 2, Banding + Thresholding Estimator}
+        \href{https://github.com/lwg342/cov-est-dev/blob/dev/hw-2021-05-27.pdf}{handwriting-2}
+
+        Suppose we don't shrink the \(\hat{\sigma}_{ij}\hat{L}_{ij}^{1}\). And put conditions where \(q_{1} = 0\), i.e., like banding but with estimated locations, then we can define the operator  as 
+        \begin{equation*}
+            T_{t, L}\pqty{\sigma_{ij}} = \begin{cases}
+                \sigma_{ij} \qq{if} L_{ij} = 1  \\
+                s_{t}(\sigma_{ij}) \qq{if} L_{ij} = 0 
+            \end{cases}
+        \end{equation*}
+        where \(s_{t}\) is the generalized thresholding operator. 
+
+        Then we can show the convergence rate of \(\norm{T_{t,\hat{L}} \pqty{\hat{\Sigma}} - \Sigma}\) similar to Bickel, et al 2008 with banding.
+        
+        Define \(B_{L}(\Sigma) = \bqty{\sigma_{ij}L_{ij}^{1}}\), then for \((i,j): L_{ij}^{1}\), there are ways to control the maximal difference \(\max_{ij} \hat{\sigma}_{ij} - \sigma_{ij}\). The rest can be 
+        
+
+        
+        
+
+        
+% The End
+
+% \printbibliography
+\end{document}

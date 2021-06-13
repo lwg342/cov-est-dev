@@ -1,0 +1,19 @@
+We apply the Network Guided Estimator to a portfolio management similar to \cite{ledoit2004HoneyShrunk}. We collect daily return data on SP500 stock from 2004 to 2019 from CRSP, together with daily data on Fama-French 3 factors and the risk free rate. 
+
+Assume that the excess returns follow the following factor model
+\begin{equation*}
+    Y_{it} = B_{i}'F_{t} + \epsilon_{it}
+\end{equation*}
+and we assume that \(\Sigma = [E \epsilon_{i} \epsilon_{j}]_{1 \leq i,j\leq N}\) is sparse. 
+
+We do a rolling window analysis, each window consists of an estimation period of 252 days and a testing period of 21 days. In the estimation period, we estimate the factor loadings by linear time series regression of excess return \(Y_{it}\) on \(F_{t}\), hence allowing the betas to vary over time, and find the de-factored excess return by 
+\begin{equation*}
+    \hat{\epsilon}_{it} = Y_{it} - \hat{B}_{i}'F_{t}
+\end{equation*}
+and in order to estimate the covariance matrix of \(Y = \pqty{Y_{1}, \dots, Y_{N}}'\), we have, under the assumption that \(\epsilon\)'s are independent of \(F_{t}\), 
+\begin{equation*}
+    \Sigma_{Y} = B \Sigma_{F} B' + \Sigma_{\epsilon}
+\end{equation*}
+We replace the factor covariance component by \(\hat{B} \hat{\Sigma}_{F} \hat{B}\), where \(\hat{\Sigma}_{F}\) is the sample covariance of factors in that period, and we estimate \(\Sigma_{\epsilon}\) by the Network Guided Estimator applied to \(\hat{\Sigma}_{\epsilon} = \frac{1}{T} \sum_{t}\hat{\epsilon}_{t} \hat{\epsilon}_{t}'\). 
+
+In order to apply the Network Guided Estimator, we consider two \(G\) matrix that comes from analysts co-coverage. 
