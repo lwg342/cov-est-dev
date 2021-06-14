@@ -1,0 +1,82 @@
+\subsection{Tables and Figures}
+
+\input{asset/table2-2.tex}
+\input{asset/table2-fro.tex}
+\input{asset/table2-1.tex}
+\begin{figure}
+    \centering
+    \includegraphics{asset/observation-level-2.eps}
+    \caption{The estimation error against the observation level}
+    \label{fig:1}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics{asset/observation-level-fro.eps}
+    \caption{The estimation error against the observation level}
+    \label{fig:2}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics{asset/observation-level-1.eps}
+    \caption{The estimation error against the observation level}
+    \label{fig:3}
+\end{figure}
+
+\input{asset/table3-2.tex}
+\input{asset/table3-fro.tex}
+\input{asset/table3-1.tex}
+
+\subsection{Proofs}
+
+
+\begin{proof}[Proof of Theorem 1]
+    We have the following decomposition:
+    \begin{equation*}
+        \norm{T_{\hat{L},\lambda}\pqty{\hat{\Sigma}} - \Sigma } \leq \norm{T_{\hat{L} ,\lambda}(\Sigma) - \Sigma} +\norm{T_{\hat{L}, \lambda}(\hat{\Sigma}) - T_{\hat{L},\lambda}(\Sigma)} = \mathbf{I} + \mathbf{II}
+    \end{equation*}
+    The first term can be bounded by 
+    \begin{align*}
+        \mathbf{I} &\leq \max_{i} \sum_{j} \abs{s_{\hat{L}, \lambda}(\sigma_{ij}) - \sigma_{ij}} \\
+        &= \max_{i} \sum_{j} \hat{L}_{ij}^{0} \abs{s_{\lambda}(\sigma_{ij}) - \sigma_{ij}}\\
+        &= \max_{i} \sum_{j} \bqty{L_{ij}^{0} \abs{s_{\lambda}(\sigma_{ij}) - \sigma_{ij}} + (\hat{L}_{ij}^{0} - L_{ij}^{0})\abs{s_{\lambda}(\sigma_{ij}) - \sigma_{ij}}} \\
+        &\leq (1 + o_{p}(1))\max_{i} \sum_{j} \bqty{L_{ij}^{0} \abs{s_{\lambda}(\sigma_{ij}) - \sigma_{ij}}}\\
+        &\leq (1 + o_{p}(1))\max_{i} \sum_{j} \bqty{L_{ij}^{0} \abs{\sigma_{ij} \mathbf{1}\Bqty{\sigma_{ij}\leq \lambda} + (s_{\lambda}(\sigma_{ij}) - \sigma_{ij}) \mathbf{1}\Bqty{\sigma_{ij} > \lambda}}}\\
+        &\leq (1 + o_{p}(1)) \max_{i} \sum_{j} \bqty{L_{ij}^{0}\abs{\sigma_{ij}}^{q} \lambda^{1 -q}}\\
+        &\leq (1 + o_{p}(1)) c_{0}(p) \lambda^{1-q}
+    \end{align*}
+    And the second term can be bounded similar to \cite{rothman2009GeneralizedThresholding}, 
+    \begin{align*}
+        \mathbf{II} &\leq  \max_{i} \sum_{j} \bqty{\hat{L}_{ij}^{1} \abs{\hat{\sigma}_{ij} - \sigma_{ij}} + \hat{L}_{ij}^{0} \abs{s_{\lambda}(\hat{\sigma}_{ij}) - s_{\lambda} (\sigma)_{ij}}}\\
+        &\leq (1 + o_{p}(1))c_{1}(p)\max_{ij} \abs{\hat{\sigma}_{ij} - \sigma_{ij}} + (1 + o_{p}(1)) \max_{i} \sum_{j} L_{ij}^{0} \abs{s_{\lambda}(\hat{\sigma}_{ij}) - s_{\lambda} (\sigma)_{ij}} \\
+        &= O_{p}\pqty{c_{1}(p) \sqrt{\frac{\log N}{T}} + c_{0}(p) \pqty{\lambda^{1-q} + \lambda^{-q} \sqrt{\frac{\log N}{T}}}} \\
+    \end{align*}
+    Hence we have 
+    \begin{align*}
+        \norm{T_{\hat{L},\lambda}\pqty{\hat{\Sigma}} - \Sigma } &= O_{p}\pqty{c_{1}(p) \sqrt{\frac{\log N}{T}} + c_{0}(p) \pqty{\lambda^{1-q} + \lambda^{-q} \sqrt{\frac{\log N}{T}}}} \\
+        &= O_{p}\pqty{c_{1}(p) \sqrt{\frac{\log N}{T}} + c_{0}(p)\pqty{\frac{\log N}{T}}^{\frac{1-q}{2}}}
+    \end{align*}
+\end{proof}
+
+\subsection{Data Description: News Implied Network}
+
+The news data are obtained from RavenPack Equity files Dow Jones Edition for the period January 2004 to December 2015. This comprehensive news dataset combines relevant content from multiple sources, including Dow Jones Newswires, Wall Street Journal, and Barron's MarketWatch, which produce the most actively monitored streams of news articles in the financial system. Each unique news story (identified by a unique story ID) tags the companies mentioned in the news by their unique and permanent entity identifier codes (RP\_ENTITX\_ID),  by which we link to stock identifier TICKER and PERMNO.
+
+As as \cite{ge2021news}, we identify links by news co-mentioning. That is, if a piece of business news reports two companies together, they share a link. We do not consider news that co-mention more than two companies since although news they may carry potential information about links, they provide noisier information. We also remove news with topics including analyst recommendations, rating changes, and index movements as these types of news might stack multiple companies together when they actually do not have real links. \autoref{table:news} provides descriptive statistics for RavenPack Equity files Dow Jones Edition dataset during the sample period. Since our comprehensive news dataset combines several sources, given a similar length of sample period, the number of unique news stories is more than ten times larger than that from \cite{scherbina2015economic} and more than eight hundred times than that from \cite{schwenkler2019network}. For link identification purposes, we only use sample news (1) are not about topics mentioned above (2) tag $S\& P$ $500$ companies and (3) mention exactly two companies, which is a subsample of $1,637,256$ unique news stories.
+
+\begin{table}[ht]
+    \centering\renewcommand\cellalign{lc}
+    \setcellgapes{3pt}\makegapedcells
+    \begin{tabular}{|l|l|} \hline
+      \makecell{Number of unique news stories} &$88,316,898$\\ 
+      \makecell{Number of stories remaining after removing topics including\\ analyst recommendations, ratings changes, and index movements}&$87,841,641$\\
+      \hspace{3mm}Of these: &\\
+      \hspace{3mm}Number of stories tag sample companies& $8,341,848 $\\
+      \hspace{5mm}Of these: &\\
+      \hspace{5mm}Number of stories that mention only one company& $5,507,772 \hspace{1mm}(66.03\%)$\\
+      \hspace{5mm}Number of stories that mention exactly two companies& $1,637,256 \hspace{1mm}(19.63\%) $ \\
+      \hspace{5mm}Number of stories that mention more than two companies&$1,196,820 \hspace{1mm}(14.34\%)$ \\
+    \hline\end{tabular}
+    \caption{Descriptive statistics for RavenPack Equity files Dow Jones Edition for the period January 2004 to December 2015.}
+    \label{table:news}
+\end{table}
+    
