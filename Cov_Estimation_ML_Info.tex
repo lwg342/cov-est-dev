@@ -5,6 +5,7 @@
 \usepackage{booktabs}\usepackage{authblk}
 \usepackage{longtable}
 \usepackage{tabularx}
+\usepackage{array, makecell} 
 %--------Hello World--------%
 %=====================================%
 \begin{document}
@@ -18,17 +19,17 @@
     % \tableofcontents
     
     \begin{abstract}
-        This paper aims to incorporate auxiliary information about the location of significant correlations into the estimation of high-dimensional covariance matrices. With the development of machine learning techniques such as textual analysis, granular linkage information among firms that used to be notoriously hard to get are now becoming available to researchers. Our proposed method provides an avenue for combining those auxiliary network information with traditional economic datasets to improve the estimation of a large covariance matrix. Simulation results show that the proposed adaptive correlation thresholding method generally performs better in the estimation of covariance matrices than previous methods, especially when the true covariance matrix is sparse and the auxiliary network contains genuine information. As a preliminary application, we apply the method to the estimation of the covariance matrix of asset returns. There are several extensions and improvements that we are considering.     
+        This paper aims to incorporate auxiliary information about the location of significant correlations into the estimation of high-dimensional covariance matrices. With the development of machine learning techniques such as textual analysis, granular linkage information among firms that used to be notoriously hard to get are now becoming available to researchers. Our Network Guided Estimator combines the banding and thresholding procedures with the help of augment information from other sources. Simulation results show that the new method has smaller estimation errors comparing with other methods in the literature. We empirically apply the Network Guided Estimator to estimate the covariance of the excess returns of SP500 stocks. The constructed global minimum variance portfolio has the smallest volatility among all competing methods.
     \end{abstract}
     
     \section{Introduction and Literature Review}\input{model.tex}
-    \section{Literature Review}\input{literature-review.tex}
     \section{Estimator and Convergence Rate}\input{theory.tex}
     \section{Simulations}\input{simulation.tex} 
     \section{Empirical Studies}\input{empirical.tex}
-    \section{Conclusion and Further Works}\input{conclud.tex}
-
+    \section{Conclusion}\input{conclud.tex}
+    \section*{Appendix}\input{appendix.tex}
     % \section{Log}% \input{log.tex}
 % The End
+    \newpage
 \printbibliography
 \end{document}

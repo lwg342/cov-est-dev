@@ -1,63 +1,40 @@
-We demonstrate the network guided estimator and examine its small-sample performance using the following simple simulations. First, we consider the case where the true covariance \(\Sigma\) comes from an AR(1) model. So for \(\Bqty{(i,j): i =1 ,\dots, N, j = 1,\dots,N} \), \(\sigma_{ij}^{2} = \sigma_{i}\sigma_{j} \rho_{ij}\) and \(\rho_{ij} = \rho^{\abs{i - j}}\). We take \(N = 400\). 
+We demonstrate the Network Guided Estimator and examine its small-sample performance using the following simulations. First, we consider the case where the true covariance \(\Sigma\) comes from an AR(1) model. So for \(\Bqty{(i,j): i =1 ,\dots, N, j = 1,\dots,N} \), \(\sigma_{ij}^{2} = \sigma_{i}\sigma_{j} \rho_{ij}\) and \(\rho_{ij} = \rho^{\abs{i - j}}\), we take \(N = 200\) and  
 \begin{equation*}
-     S_{ij} = 3 * \rho^{\abs{i - j}}
+     \sigma_{ij} = 3 * \rho^{\abs{i - j}}. 
 \end{equation*}
-and assume we observe a matrix \(G(l)\) indicating the location of highly correlated pairs \(L_{ij}(l) = \mathbf{1}\Bqty{\rho_{ij} \geq l}\). Conditional on \(L_{ij} = 1\), we observe \(G_{ij}= 1\) with probability \(p\) and conditional on \(L_{ij}  =0\) , \(G_{ij}  =1\) with probability \(q\). Hence \(p,q\) reflect the probability of missing important locations and including false important locations respectively. 
+Assume we observe a matrix \(\hat{L}\) indicating the location of highly correlated pairs \(L_{ij} = \mathbf{1}\Bqty{\rho_{ij} \geq l}\). Conditional on \(L_{ij} = 1\), we observe \(\hat{L}_{ij}= 1\) with probability \(p\) and conditional on \(L_{ij}  =0\) , \(\hat{L}_{ij}  =1\) with probability \(q\). Hence \(p,q\) reflect the probability of missing important locations (type \RN{2} error) and including falsely important locations (type \RN{1} error) respectively. 
 
-We then generate \(T = 100\) independent drws of observations \(X \sim N(0, \Sigma)\) and estimate \(\Sigma\) using 
+We then generate \(T = 100\) independent draws of observations \(X_{t}\) from \(N(0, \Sigma)\) and estimate \(\Sigma\) using 
 \begin{enumerate*}
-     \item Sample covariance ;
+     \item Sample covariance;
      \item Linear Shrinkage estimator;
      \item Nonlinear Shrinkage estimator;
      \item Universal thresholding on the correlation;
-     \item and Network Guided thresholding estimator. 
+     \item and Network Guided Estimator. 
 \end{enumerate*}
-We now compare their performance. It's worth collecting here the parameters that we will adjust in the experiments:
+We now compare their performance. It's worth collecting here the parameters that we will adjust in the experiments in \autoref{t:1}
 \begin{table}[htbp]
      \centering\begin{tabularx}{\textwidth}{c|X}
           \toprule
           Parameter & Description \\ 
           \midrule
           \(\rho\) & Determines how strong the correlation is and the sparsity of the covariance matrix \(\Sigma\) \\
-          \(l\) & Observation level, determines how we classify a pair \((i,j)\) as important, i.e., \(L_{ij} =1\). \\
-          \(p\) & Conditional on \(L_{ij} =1\), the probability of actually observing \(G_{ij} =1\). \\
-          \(q\) & Conditional on \(L_{ij} = 0\), the probability of  observing \(G_{ij} =1\)\\
-          \(\lambda\)& The Threshold level when we apply generalized thresholding operator on \(\sigma_{ij}\) where \(G_{ij} = 0\). \\
+          \(l\) & Observation level, determines how we classify a pair \((i,j)\) as important, i.e., \(L_{ij} =\mathbf{1}\Bqty{\rho_{ij} > l}\). \\
+          \(p\) & Conditional on \(L_{ij} =1\), the probability of actually observing \(\hat{L}_{ij} =1\). \\
+          \(q\) & Conditional on \(L_{ij} = 0\), the probability of  observing \(\hat{L}_{ij} =1\)\\
+          \(\lambda\)& The Threshold level when we apply generalized thresholding operator on \(\sigma_{ij}\) where \(\hat{L}_{ij} = 0\). \\
           \bottomrule
      \end{tabularx}
      \caption{Description of varying parameters.}
      \label{t:1}
 \end{table}
 
-\input{asset/table2-2.tex}
-\input{asset/table2-fro.tex}
-\input{asset/table2-1.tex}
 
-In \autoref{t:2-fro}, we show the general performance of these estimators when we simulate using different \(\rho\) and thresholding level \(\tau\). Here we have taken the thresholding operator to be soft thresholding. It can be seen that generally speaking, when the covariance matrix becomes denser, linear, nonlinear shrinakge estimators and the sample covariance estimator become superiro to 
+In Table \ref{t:2-2}, \ref{t:2-fro} and \ref{t:2-1}, we show the estimation errors of these estimators in terms of the operator norm, the Frobenius norm and the matrix 1-norm, when we simulate using different \(\rho\) and thresholding level \(\lambda\) and fix the other parameters at \(l = 0.3, p = 1\) and \(q =0\). Here we have taken the thresholding operator to be soft thresholding. It can be seen that for all these norms, when the true covariance matrix is not too dense, Network Guided Estimator outperforms all the competitors given a good choice of $\lambda$. When the true covariance matrix is more sparse, indicated by smaller $\rho$, thresholding methods become more appealing and when the true covariance matrix is denser, the sample covariance estiamtor shows better performance compared with other benchmark models. Thanks to the accurate location information, Network Guided Estimator is able to balance these two estimators.  
 
-Then we consider simulations with varying observation levels \(l\). In \autoref{fig:1}
-\begin{figure}[htbp]
-     \centering
-     \includegraphics{asset/observation-level--2.eps}
-     \caption{The estimation error against the observation level}
-     \label{fig:1}
-\end{figure}
-\begin{figure}[htbp]
-     \centering
-     \includegraphics{asset/observation-level--fro.eps}
-     \caption{The estimation error against the observation level}
-     \label{fig:2}
-\end{figure}
-\begin{figure}[htbp]
-     \centering
-     \includegraphics{asset/observation-level--1.eps}
-     \caption{The estimation error against the observation level}
-     \label{fig:3}
-\end{figure}
-when we set observation level equal to \(0\), the network guided estimator will be the same as the sample covariance estimator, on the other extreme, when observation level is set to \(1\), the network guided estimator is equivalent to universal thresholding. In between these cases, when we have information about the locations of the important pairs, we have a range where the estimation error is lowered. 
+% When the covariance matrix becomes denser, the advantages of Universal Threshold are vanishing, even under well-chosen Threshold level $\lambda$. However, with the assistance of the network guidance, the excellent performance is preserved, except for the extreme circumstance where $\rho=0.99$.
 
-\input{asset/table3-2.tex}
-\input{asset/table3-fro.tex}
-\input{asset/table3-1.tex}
+Another tuning parameter in the Network Guided Estimator is the choice of $l$, which can determine whether a link should be reserved regardless of the information from the statistic. Then we consider simulations with varying observation levels \(l\). In Figure \ref{fig:1}, \ref{fig:2}, \ref{fig:3}, 
+when we set observation level equal to \(0\), the Network Guided Estimator will be the same as the sample covariance estimator, on the other extreme, when observation level is set to \(1\), the Network Guided Estimator is equivalent to universal thresholding. In between these cases, when we have information about the locations of the important pairs, we have a range where the estimation errors can be lowered. 
 
-In \autoref{t:32}, we have when \(p = q = 0\) the estimation error of the universal thresholding estimator, and \(p =q =1\) the sample covaraince estimation error. As we can see, as long as \(q\) is not large, the estimation error will be smaller when we have a higher probability \(p\) of observing the true large elements. It should be noted that \(q\) in fact cannot be very large, given that the whole matrix is sparse. 
+Then we show the effects of errors in estimating the \(L_{ij}\) by varying the parameters \(p\) and \(q\). In Table \ref{t:3-2}, \ref{t:3-fro}, \ref{t:3-1}, we have when \(p = q = 0\) the estimation error of the universal thresholding estimator, and \(p =q =1\) the sample covaraince estimation error. As we can see, as long as \(q\) is not too large, the estimation error will be smaller when we have a higher probability \(p\) of observing the true large elements. It should be noted that \(q\) in fact cannot be very large, given that the whole matrix is sparse. 

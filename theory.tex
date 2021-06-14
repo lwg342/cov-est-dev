@@ -1,10 +1,10 @@
 Assume we have observations \(X = \pqty{X_{1}, \dots, X_{T}}\), where \(X_{t}\) are independent drawn from a \(N\)-dimensional distribution \(F\) with mean \(\mu\) and variance \(\Sigma\). In \cite{bickel2008CovarianceRegularization}, they consider the following uniformity class of covariance matrices:
 \begin{equation*}
-    \mathcal{U}_{\tau}(q, c_{0}(p) , M) = \Bqty{\Sigma: \sigma_{i,i} \leq M, \sum_{j=1}^{p} \abs{\sigma_{ij}}^{q} \leq c_{0}(p), \qq{for all} i}
+    \mathcal{U}_{\tau}(q, c_{0}(p) , M) = \Bqty{\Sigma: \sigma_{i,i} \leq M, \sum_{j=1}^{p} \abs{\sigma_{ij}}^{q} \leq c_{0}(p), \mbox{ for all } i}
 \end{equation*}
 And the convergence rate will depend on \(c_{0}(p)\) and \(q\). Notice that in order to bound the \(i\)-th row sparsity index \(\mathcal{S}_{i}(q) := \sum_{j=1}^{p} \abs{\sigma_{ij}}^{q}\) by \(c_{0}(p)\), the coefficient \(q\) is important. Suppose \(q = 0\), then \(\mathcal{S}_{i} = \#\Bqty{\sigma_{ij} \neq 0}\). If the \(i\)-th row \(\Sigma_{i\cdot}\) has a lot of nonzero but small elements, then to bound \(\mathcal{S}_{i}(0)\) would require a higher \(c_{0}(p)\). On the other hand when \(q \to 1\), the large elements of \(\Sigma_{i \cdot}\) will dominate. Hence if \(\Sigma\) is sparse in the sense that it contains a small number of relatively large elements and a large number of small elements, it's advisable to state conditions separately for these elements, and we consider the following uniformity class:
 \begin{align*}
-    \mathcal{U}(q, c_{0}, c_{1}, M, L) = \Bqty{\Sigma : \sigma_{ii} \leq M, \sum_{j} L_{ij}^{1} \leq c_{1}(p), \sum_{j} L_{ij}^{0}\abs{\sigma_{ij}}^{q} \leq c_{0}(p) \qq{for all} i}
+    \mathcal{U}(q, c_{0}, c_{1}, M, L) = \Bqty{\Sigma : \sigma_{ii} \leq M, \sum_{j} L_{ij}^{1} \leq c_{1}(p), \sum_{j} L_{ij}^{0}\abs{\sigma_{ij}}^{q} \leq c_{0}(p) \mbox{ for all } i}
 \end{align*}
 where \(L_{ij}\) represents the location of the large elements and for \(s \in \Bqty{0,1}\), \(L_{ij}^{s} = \mathbf{1}_{L_{ij} = s}\) This uniformity class controls the number of the large elements at locations \(((i,j): L_{ij}^{1} = 1)\) and the growth rate of the remaining small elements. 
 
@@ -29,8 +29,8 @@ where \(s_{\lambda}(x)\) is the generalized thresholding operator and \(\hat{\si
 \begin{remark}
     \begin{enumerate}
         \item 
-        The first assumption can be verified in various settings, for example, if \(F\) is Gaussian or sub-Gaussian(\cite{cai2011AdaptiveThresholding}). We can even replace the independence assumption and allow for temporal dependence(see Lemma A.2 in \cite{shu2019EstimationLarge}). 
-        \item The second assumption appears restrictive, but since \(L_{ij}\) are estimated independently from different datasets, we hope it's not too strigent to require that for each \((i,j)\), \(L_{ij}\) can be estimated consistently. In addition, simulation shows that as long as we don't make too much II-type error: \(\hat{L}_{ij} = 1\) when \(L_{ij} = 0\), using the additional information still improves the performance. 
+        The first assumption can be verified in various settings, for example, if \(F\) is Gaussian or sub-Gaussianv(\cite{cai2011AdaptiveThresholding}). We can even replace the independence assumption and allow for temporal dependence (see Lemma A.2 in \cite{shu2019EstimationLarge}). 
+        \item The second assumption appears restrictive, but since \(L_{ij}\) are estimated independently from different datasets, we believe it's not too strigent to require that for each \((i,j)\), \(L_{ij}\) can be estimated consistently. In addition, simulation shows that as long as we don't make too much II-type error: \(\hat{L}_{ij} = 1\) when \(L_{ij} = 0\), using the additional information still improves the performance. 
         
         Given that the estimation of \(\hat{L}_{ij}\) is independent of the sample \((X_{t})\), then perhaps we can find a less restrictive condition for the result to hold.
     \end{enumerate}
@@ -45,35 +45,6 @@ where \(s_{\lambda}(x)\) is the generalized thresholding operator and \(\hat{\si
     and \(\frac{\log N}{T} \to 0\) as \(T \to \infty\), 
     then for the operator norm \(\norm{M}= \max_{j} \abs{\lambda_{j}(M)}\) where \(\lambda_{1},\dots,\lambda_{N}\) are the eigenvalues of \(M\), we have 
     \begin{equation*}
-        \norm{T_{\hat{L},\lambda}\pqty{\hat{\Sigma}} - \Sigma } = O_{p}\pqty{c_{1}(p) \sqrt{\frac{\log N}{T}},  c_{0}(p)\pqty{\frac{\log N}{T}}^{\frac{1-q}{2}}}
+        \norm{T_{\hat{L},\lambda}\pqty{\hat{\Sigma}} - \Sigma } = O_{p}\pqty{c_{1}(p) \sqrt{\frac{\log N}{T}}+c_{0}(p)\pqty{\frac{\log N}{T}}^{\frac{1-q}{2}}}. 
     \end{equation*}
 \end{thm}
-
-\begin{proof}
-    We have the following decomposition:
-    \begin{equation*}
-        \norm{T_{\hat{L},\lambda}\pqty{\hat{\Sigma}} - \Sigma } \leq \norm{T_{\hat{L} ,\lambda}(\Sigma) - \Sigma} +\norm{T_{\hat{L}, \lambda}(\hat{\Sigma}) - T_{\hat{L},\lambda}(\Sigma)} = \mathbf{I} + \mathbf{II}
-    \end{equation*}
-    The first term can be bounded by 
-    \begin{align*}
-        \mathbf{I} &\leq \max_{i} \sum_{j} \abs{s_{\hat{L}, \lambda}(\sigma_{ij}) - \sigma_{ij}} \\
-        &= \max_{i} \sum_{j} \hat{L}_{ij}^{0} \abs{s_{\lambda}(\sigma_{ij}) - \sigma_{ij}}\\
-        &= \max_{i} \sum_{j} \bqty{L_{ij}^{0} \abs{s_{\lambda}(\sigma_{ij}) - \sigma_{ij}} + (\hat{L}_{ij}^{0} - L_{ij}^{0})\abs{s_{\lambda}(\sigma_{ij}) - \sigma_{ij}}} \\
-        &\leq (1 + o_{p}(1))\max_{i} \sum_{j} \bqty{L_{ij}^{0} \abs{s_{\lambda}(\sigma_{ij}) - \sigma_{ij}}}\\
-        &\leq (1 + o_{p}(1))\max_{i} \sum_{j} \bqty{L_{ij}^{0} \abs{\sigma_{ij} \mathbf{1}\Bqty{\sigma_{ij}\leq \lambda} + (s_{\lambda}(\sigma_{ij}) - \sigma_{ij}) \mathbf{1}\Bqty{\sigma_{ij} > \lambda}}}\\
-        &\leq (1 + o_{p}(1)) \max_{i} \sum_{j} \bqty{L_{ij}^{0}\abs{\sigma_{ij}}^{q} \lambda^{1 -q}}\\
-        &\leq (1 + o_{p}(1)) c_{0}(p) \lambda^{1-q}
-    \end{align*}
-    And the second term can be bounded similar to \cite{rothman2009GeneralizedThresholding}, 
-    \begin{align*}
-        \mathbf{II} &\leq  \max_{i} \sum_{j} \bqty{\hat{L}_{ij}^{1} \abs{\hat{\sigma}_{ij} - \sigma_{ij}} + \hat{L}_{ij}^{0} \abs{s_{\lambda}(\hat{\sigma}_{ij}) - s_{\lambda} (\sigma)_{ij}}}\\
-        &\leq (1 + o_{p}(1))c_{1}(p)\max_{ij} \abs{\hat{\sigma}_{ij} - \sigma_{ij}} + (1 + o_{p}(1)) \max_{i} \sum_{j} L_{ij}^{0} \abs{s_{\lambda}(\hat{\sigma}_{ij}) - s_{\lambda} (\sigma)_{ij}} \\
-        &= O_{p}\pqty{c_{1}(p) \sqrt{\frac{\log N}{T}} + c_{0}(p) \pqty{\lambda^{1-q} + \lambda^{-q} \sqrt{\frac{\log N}{T}}}} \\
-    \end{align*}
-    Hence we have 
-    \begin{align*}
-        \norm{T_{\hat{L},\lambda}\pqty{\hat{\Sigma}} - \Sigma } &= O_{p}\pqty{c_{1}(p) \sqrt{\frac{\log N}{T}} + c_{0}(p) \pqty{\lambda^{1-q} + \lambda^{-q} \sqrt{\frac{\log N}{T}}}} \\
-        &= O_{p}\pqty{c_{1}(p) \sqrt{\frac{\log N}{T}} + c_{0}(p)\pqty{\frac{\log N}{T}}^{\frac{1-q}{2}}}
-    \end{align*}
-\end{proof}
-

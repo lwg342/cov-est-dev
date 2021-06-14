@@ -1,46 +1,45 @@
 \subsection{Global Minimum Variance Portfolio}
 
-We apply the Network Guided Estimator to a portfolio management similar to \cite{ledoit2004HoneyShrunk}. We collect daily return data on SP500 stock from 2004 to 2019 from CRSP, together with daily data on Fama-French 3 factors and the risk free rate. 
+We apply the Network Guided Estimator to a portfolio management similar to \cite{ledoit2004HoneyShrunk}. We collect daily return data on SP500 stocks and Fama-French 3 factors and the risk-free rates from 2004 to 2015 from Center for Research in Security Prices (CRSP).  
 
 Assume that the excess returns follow the following factor model
 \begin{equation*}
-    Y_{it} = B_{i}'F_{t} + \epsilon_{it}
+    X_{it} = B_{i}'F_{t} + \epsilon_{it},
 \end{equation*}
 and we assume that \(\Sigma = [E \epsilon_{i} \epsilon_{j}]_{1 \leq i,j\leq N}\) is sparse. 
 
-We do a rolling window analysis, each window consists of an estimation period of 252 days and a testing period of 21 days. In the estimation period, we estimate the factor loadings by linear time series regression of excess return \(Y_{it}\) on \(F_{t}\), hence allowing the betas to vary over time, and find the de-factored excess return by 
+We do a rolling-window analysis: each window consists of an estimation period of 252 days and a testing period of 21 days. In the estimation period, we estimate the factor loadings by linear time series regression of excess return \(X_{it}\) on the factors \(F_{t}\), hence allowing the betas \(B_{i}\) to vary over time, and we find the de-factored excess return by 
 \begin{equation*}
-    \hat{\epsilon}_{it} = Y_{it} - \hat{B}_{i}'F_{t}
+    \hat{\epsilon}_{it} = X_{it} - \hat{B}_{i}'F_{t}
 \end{equation*}
-and in order to estimate the covariance matrix of \(Y = \pqty{Y_{1}, \dots, Y_{N}}'\), we have, under the assumption that \(\epsilon\)'s are independent of \(F_{t}\), 
+and in order to estimate the covariance matrix of \(X = \pqty{X_{1}, \dots, X_{N}}'\), we have, under the assumption that \(\epsilon\)'s are independent of \(F_{t}\), 
 \begin{equation*}
-    \Sigma_{Y} = B \Sigma_{F} B' + \Sigma_{\epsilon}
+    \Sigma_{X} = B \Sigma_{F} B' + \Sigma_{\epsilon}
 \end{equation*}
 We replace the factor covariance component by \(\hat{B} \hat{\Sigma}_{F} \hat{B}\), where \(\hat{\Sigma}_{F}\) is the sample covariance of factors in that period, and we estimate \(\Sigma_{\epsilon}\) by the Network Guided Estimator applied to \(\hat{\Sigma}_{\epsilon} = \frac{1}{T} \sum_{t}\hat{\epsilon}_{t} \hat{\epsilon}_{t}'\). 
 
-In order to apply the Network Guided Estimator, we consider two \(G\) matrix that comes from analysts co-coverage:1. IBES: .... 2: Dow Jones: .... 
+In order to apply the Network Guided Estimator, we consider a preliminary estimator \(\hat{L}_{ij}\) using the RavenPack news data,  where \(\hat{L}_{ij} =1 \) if the pair of firms \((i,j)\) have been co-mentioned more than 50 times during the past year and the current sample correlation is higher than 0.5 to keep \(G\) sparse and mitigate the noisy observations. 
 
-In order to keep \(G\) sparse and mitigate the noisy observations, we set for IBES, \(G_{ij} = 1\) if firms \((i,j)\) are mentioned more than 18 times, and for Dow Jones data, \(G_{ij} =1\) if firms (i,j) are co-mentioned more than 100 times. With this choice, the total number of links is around 1\textperthousand of the whole network matrix. We select the thresholding parameter using cross-validation with the constraint that the resulting estimate is positvie definite. When the thresholding level becomes higher, the resulting estimate becomes more sparse, in the limit, it'll be a diagonla matrix and p.d., so we keep the thresholding level above the minimum level for the estimate to be p.d. 
+We select the thresholding parameter using cross-validation with the constraint that the resulting estimate is positvie definite. When the thresholding level becomes higher, the resulting estimate becomes more sparse, in the limit, it'll be a diagonl matrix and positive definite, see discussion in \cite{fan2015OverviewEstimation}. 
 
 After using the data from estimation period to estimate \(\hat{B} ,\hat{\Sigma}_{F}, \hat{\Sigma}_{\epsilon}\), we construct 
 \begin{equation*}
-    \hat{\Sigma}_{Y} = \hat{B} \hat{\Sigma}_{F} \hat{B}' + \hat{\Sigma}_{\epsilon} 
+    \hat{\Sigma}_{X} = \hat{B} \hat{\Sigma}_{F} \hat{B}' + \hat{\Sigma}_{\epsilon} 
 \end{equation*}
-and construct the \textit{global minimum variance} portfolio where weights are given by 
+and then construct the \textit{global minimum variance} portfolio with weights given by 
 \begin{equation*}
-    w = \frac{\hat{\Sigma}_{Y} \mathbf{1}}{\mathbf{1}' \hat{\Sigma}_{Y} \mathbf{1}}
+    w = \frac{\hat{\Sigma}_{X} \mathbf{1}}{\mathbf{1}' \hat{\Sigma}_{X} \mathbf{1}}
 \end{equation*}
-where \(\mathbf{1}\) is a conforming vector of ones. We collect the portfolio return over the next 21-day testing period. This conludes one of the rolling windows. Then we move forward 21 days and repeat this exercise. Using 2004- 2014 daily data, we can construct a daily portfolio return from 2005 to 2015, where the portfolio is rebalanced every 21 days. We compute the holding period return of this portfolio and its standard deviation. In Table \ref{t5} we show the result together with mean and Sharpe ratio and compare it with global minimum variance portfolio constructed using linear shrinkage and universal thresholding. It's worth mentioning that given we are comparing global minimum variance portfolio, the standard deviation is the relevant indicator of performance.  
+where \(\mathbf{1}\) is a conforming vector of ones. We collect the portfolio return over the next 21-day testing period. This conludes one of the rolling windows. Then we move forward 21 days and repeat this exercise. Using 2004-2015 daily data, we can construct a daily portfolio return from 2005 to 2015, where the portfolio is rebalanced every 21 days. We compute the holding-period return of this portfolio and show in Table \ref{t5} the standard deviation together with mean and the Sharpe ratio. We compare it with global minimum variance portfolio constructed using linear shrinkage and universal thresholding and the equally weighted portfolio. It's worth mentioning that given we are comparing global minimum variance portfolio, the standard deviation is the most relevant indicator of performance.  
 
 \input{asset/table5.tex}
 
-\section{Data}
-We consider daily returns of $S\& P$ $500$ stocks for our application. All the stock market related data are from the Center for Research in Security Prices (CRSP). Daily factor returns are obtained from Kenneth French’s website.
-\subsection{News Implied Network}
-The news data are obtained from RavenPack Equity files Dow Jones Edition for the period January 2004 to December 2015. This comprehensive news dataset combines relevant content from multiple sources, including Dow Jones Newswires, Wall Street Journal, and Barron's MarketWatch, which produce the most actively monitored streams of news articles in the financial system. Each unique news story (identified by a unique story ID) tags the companies mentioned in the news by their unique and permanent entity identifier codes (RP\_ENTITY\_ID),  by which we link to stock identifier TICKER and PERMNO.
+% \section{Data}
+% We consider daily returns of $S\& P$ $500$ stocks for our application. All the stock market related data are from the Center for Research in Security Prices (CRSP). Daily factor returns are obtained from Kenneth French’s website.
+% \subsection{News Implied Network}
+% The news data are obtained from RavenPack Equity files Dow Jones Edition for the period January 2004 to December 2015. This comprehensive news dataset combines relevant content from multiple sources, including Dow Jones Newswires, Wall Street Journal, and Barron's MarketWatch, which produce the most actively monitored streams of news articles in the financial system. Each unique news story (identified by a unique story ID) tags the companies mentioned in the news by their unique and permanent entity identifier codes (RP\_ENTITX\_ID),  by which we link to stock identifier TICKER and PERMNO.
 
-As as \cite{ge2021news}, we identify links by news co-mentioning. That is, if a piece of business news reports two companies together, they share a link. We do not consider news that co-mention more than two companies since although news they may carry potential information about links, they provide noisier information. We also remove news with topics including analyst recommendations, rating changes, and index movements as these types of news might stack multiple companies together when they actually do not have real links. \autoref{table:news} provides descriptive statistics for RavenPack Equity files Dow Jones Edition dataset during the sample period. Since our comprehensive news dataset combines several sources, given a similar length of sample period, the number of unique news stories is more than ten times larger than that from \cite{scherbina2015economic} and more than eight hundred times than that from \cite{schwenkler2019network}. For link identification purposes, we only use sample news (1) are not about topics mentioned above (2) tag $S\& P$ $500$ companies and (3) mention exactly two companies, which is a subsample of $1,637,256$ unique news stories.
+% As as \cite{ge2021news}, we identify links by news co-mentioning. That is, if a piece of business news reports two companies together, they share a link. We do not consider news that co-mention more than two companies since although news they may carry potential information about links, they provide noisier information. We also remove news with topics including analyst recommendations, rating changes, and index movements as these types of news might stack multiple companies together when they actually do not have real links. \autoref{table:news} provides descriptive statistics for RavenPack Equity files Dow Jones Edition dataset during the sample period. Since our comprehensive news dataset combines several sources, given a similar length of sample period, the number of unique news stories is more than ten times larger than that from \cite{scherbina2015economic} and more than eight hundred times than that from \cite{schwenkler2019network}. For link identification purposes, we only use sample news (1) are not about topics mentioned above (2) tag $S\& P$ $500$ companies and (3) mention exactly two companies, which is a subsample of $1,637,256$ unique news stories.
 
-\subsection{IBES Analyst Coverage Network}
-We use the Institutional Brokers Estimate System (IBES) detail history files to construct the analyst co-coverage-based adjacency matrix. For each year in the sample, we consider a stock is covered by an analyst if the analyst issues at least one FY1 or FY2 earnings forecast for the stock during the year. And we consider two stocks as linked if there are common analysts during the year, weighted by the number of common analysts. 
-
+% \subsection{IBES Analyst Coverage Network}
+% We use the Institutional Brokers Estimate System (IBES) detail history files to construct the analyst co-coverage-based adjacency matrix. For each year in the sample, we consider a stock is covered by an analyst if the analyst issues at least one FX1 or FX2 earnings forecast for the stock during the year. And we consider two stocks as linked if there are common analysts during the year, weighted by the number of common analysts. 
