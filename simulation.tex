@@ -29,19 +29,19 @@ We now compare their performance. It's worth collecting here the parameters that
      \label{t:1}
 \end{table}
 
-\input{Covariance-Estimation-with-Auxiliary-Information/asset/table2-fro.tex}
-\input{Covariance-Estimation-with-Auxiliary-Information/asset/table2-1.tex}
+\input{asset/table2-fro.tex}
+\input{asset/table2-1.tex}
 In \autoref{t:2-fro}, we show the general performance of these estimators when we simulate using different \(\rho\) and thresholding level \(\tau\). Here we have taken the thresholding operator to be soft thresholding. It can be seen that generally speaking, when the covariance matrix becomes denser, linear, nonlinear shrinakge estimators and the sample covariance estimator become superiro to 
 
 Then we consider simulations with varying observation levels \(l\). In \autoref{fig:1}
 \begin{figure}[htbp]
      \centering
-     \includegraphics{Covariance-Estimation-with-Auxiliary-Information/asset/observation-level.eps}
+     \includegraphics{asset/observation-level.eps}
      \caption{The estimation error against the observation level}
      \label{fig:1}
 \end{figure}
 when we set observation level equal to \(0\), the network guided estimator will be the same as the sample covariance estimator, on the other extreme, when observation level is set to \(1\), the network guided estimator is equivalent to universal thresholding. In between these cases, when we have information about the locations of the important pairs, we have a range where the estimation error is lowered. 
 
-\input{Covariance-Estimation-with-Auxiliary-Information/asset/table3.tex}
+\input{asset/table3.tex}
 
 In \autoref{t:3}, we have when \(p = q = 0\) the estimation error of the universal thresholding estimator, and \(p =q =1\) the sample covaraince estimation error. As we can see, as long as \(q\) is not large, the estimation error will be smaller when we have a higher probability \(p\) of observing the true large elements. It should be noted that \(q\) in fact cannot be very large, given that the whole matrix is sparse. 
