@@ -1,6 +1,5 @@
 \documentclass[12pt]{article}
 \usepackage{myart}
-% \addbibresource{/Users/lwg342/Documents/LaTeX/lib.bib}
 \addbibresource{lib.bib}
 \addbibresource{ref.bib}
 \usepackage{booktabs}\usepackage{authblk}
@@ -22,8 +21,9 @@
         This paper aims to incorporate auxiliary information about the location of significant correlations into the estimation of high-dimensional covariance matrices. With the development of machine learning techniques such as textual analysis, granular linkage information among firms that used to be notoriously hard to get are now becoming available to researchers. Our proposed method provides an avenue for combining those auxiliary network information with traditional economic datasets to improve the estimation of a large covariance matrix. Simulation results show that the proposed adaptive correlation thresholding method generally performs better in the estimation of covariance matrices than previous methods, especially when the true covariance matrix is sparse and the auxiliary network contains genuine information. As a preliminary application, we apply the method to the estimation of the covariance matrix of asset returns. There are several extensions and improvements that we are considering.     
     \end{abstract}
     
-    \section{Model and Introduction}\input{model.tex}
+    \section{Introduction and Literature Review}\input{model.tex}
     \section{Literature Review}\input{literature-review.tex}
+    \section{Estimator and Convergence Rate}\input{theory.tex}
     \section{Simulations}\input{simulation.tex} 
     \section{Empirical Studies}\input{empirical.tex}
     \section{Conclusion and Further Works}\input{conclud.tex}
