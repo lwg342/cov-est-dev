@@ -22,26 +22,42 @@ We now compare their performance. It's worth collecting here the parameters that
           \(l\) & Observation level, determines how we classify a pair \((i,j)\) as important, i.e., \(L_{ij} =1\). \\
           \(p\) & Conditional on \(L_{ij} =1\), the probability of actually observing \(G_{ij} =1\). \\
           \(q\) & Conditional on \(L_{ij} = 0\), the probability of  observing \(G_{ij} =1\)\\
-          \(\tau\)& The Threshold level when we apply generalized thresholding operator on \(\sigma_{ij}\) where \(G_{ij} = 0\). \\
+          \(\lambda\)& The Threshold level when we apply generalized thresholding operator on \(\sigma_{ij}\) where \(G_{ij} = 0\). \\
           \bottomrule
      \end{tabularx}
      \caption{Description of varying parameters.}
      \label{t:1}
 \end{table}
 
+\input{asset/table2-2.tex}
 \input{asset/table2-fro.tex}
 \input{asset/table2-1.tex}
+
 In \autoref{t:2-fro}, we show the general performance of these estimators when we simulate using different \(\rho\) and thresholding level \(\tau\). Here we have taken the thresholding operator to be soft thresholding. It can be seen that generally speaking, when the covariance matrix becomes denser, linear, nonlinear shrinakge estimators and the sample covariance estimator become superiro to 
 
 Then we consider simulations with varying observation levels \(l\). In \autoref{fig:1}
 \begin{figure}[htbp]
      \centering
-     \includegraphics{asset/observation-level.eps}
+     \includegraphics{asset/observation-level--2.eps}
      \caption{The estimation error against the observation level}
      \label{fig:1}
 \end{figure}
+\begin{figure}[htbp]
+     \centering
+     \includegraphics{asset/observation-level--fro.eps}
+     \caption{The estimation error against the observation level}
+     \label{fig:2}
+\end{figure}
+\begin{figure}[htbp]
+     \centering
+     \includegraphics{asset/observation-level--1.eps}
+     \caption{The estimation error against the observation level}
+     \label{fig:3}
+\end{figure}
 when we set observation level equal to \(0\), the network guided estimator will be the same as the sample covariance estimator, on the other extreme, when observation level is set to \(1\), the network guided estimator is equivalent to universal thresholding. In between these cases, when we have information about the locations of the important pairs, we have a range where the estimation error is lowered. 
 
-\input{asset/table3.tex}
+\input{asset/table3-2.tex}
+\input{asset/table3-fro.tex}
+\input{asset/table3-1.tex}
 
-In \autoref{t:3}, we have when \(p = q = 0\) the estimation error of the universal thresholding estimator, and \(p =q =1\) the sample covaraince estimation error. As we can see, as long as \(q\) is not large, the estimation error will be smaller when we have a higher probability \(p\) of observing the true large elements. It should be noted that \(q\) in fact cannot be very large, given that the whole matrix is sparse. 
+In \autoref{t:32}, we have when \(p = q = 0\) the estimation error of the universal thresholding estimator, and \(p =q =1\) the sample covaraince estimation error. As we can see, as long as \(q\) is not large, the estimation error will be smaller when we have a higher probability \(p\) of observing the true large elements. It should be noted that \(q\) in fact cannot be very large, given that the whole matrix is sparse. 

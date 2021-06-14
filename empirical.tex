@@ -30,9 +30,9 @@ and construct the \textit{global minimum variance} portfolio where weights are g
 \begin{equation*}
     w = \frac{\hat{\Sigma}_{Y} \mathbf{1}}{\mathbf{1}' \hat{\Sigma}_{Y} \mathbf{1}}
 \end{equation*}
-where \(\mathbf{1}\) is a conforming vector of ones. We collect the portfolio return over the next 21-day testing period. This conludes one of the rolling windows. Then we move forward 21 days and repeat this exercise. Using 2004- 2014 daily data, we can construct a daily portfolio return from 2005 to 2015, where the portfolio is rebalanced every 21 days. We compute the holding period return of this portfolio and its standard deviation. In autoref{t:4} we show the result together with mean and Sharpe ratio and compare it with global minimum variance portfolio constructed using linear shrinkage and universal thresholding. It's worth mentioning that given we are comparing global minimum variance portfolio, the standard deviation is the relevant indicator of performance.  
+where \(\mathbf{1}\) is a conforming vector of ones. We collect the portfolio return over the next 21-day testing period. This conludes one of the rolling windows. Then we move forward 21 days and repeat this exercise. Using 2004- 2014 daily data, we can construct a daily portfolio return from 2005 to 2015, where the portfolio is rebalanced every 21 days. We compute the holding period return of this portfolio and its standard deviation. In Table \ref{t5} we show the result together with mean and Sharpe ratio and compare it with global minimum variance portfolio constructed using linear shrinkage and universal thresholding. It's worth mentioning that given we are comparing global minimum variance portfolio, the standard deviation is the relevant indicator of performance.  
 
-
+\input{asset/table5.tex}
 
 \section{Data}
 We consider daily returns of $S\& P$ $500$ stocks for our application. All the stock market related data are from the Center for Research in Security Prices (CRSP). Daily factor returns are obtained from Kenneth French’s website.
